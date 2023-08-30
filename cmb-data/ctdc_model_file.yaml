@@ -1,0 +1,355 @@
+# Cancer Moonshot Biobank data model nodes, properties and relationships file
+# Title case names are "reserved" (meaningful to the parser)
+# Lower case names are labels for the entities
+
+Nodes:
+  node:
+    Desc: text
+    Tags:
+      Category: value
+      Assignment: value
+      Class: value
+      Template: 'Yes'
+    Props:
+      - property_1
+      - property_2
+      - property_3
+      - property_4
+      - property_5
+      - property_6
+  program:  
+    Desc: text
+    Tags:
+      Category: administrative
+      Assignment: core
+      Class: primary
+      Template: 'Yes'
+    Props:
+      - program_name #11444542
+      - program_short_name #11459801
+  project:
+    Desc: text
+    Tags:
+      Category: administrative
+      Assignment: core
+      Class: secondary
+      Template: 'Yes'
+    Props:
+      - project_name #11459804
+      - project_short_name #11459806
+  principal_investigator:
+    Desc: text
+    Tags:
+      Category: study
+      Assignment: core
+      Class: primary
+      Template: 'Yes'
+    Props:
+      - principal_investigator_first_name #10624731
+      - principal_investigator_last_name #10624733
+      - principal_investigator_middle_name #10624732
+      - principal_investigator_orcid_id #10624734
+  study:
+    Desc: text
+    Tags:
+      Category: study
+      Assignment: core
+      Class: primary
+      Template: 'Yes'
+    Props:
+      - study_name #11459810
+      - study_short_name #11459812
+      - study_id
+      - study_description
+      - study_type #11160683
+      - dates_of_conduct
+  associated_link:
+    Desc: text
+    Tags:
+      Category: study
+      Assignment: core
+      Class: secondary
+      Template: 'Yes'
+    Props:
+      - associated_link_name
+      - associated_link_url
+  image_collection:
+    Desc: text
+    Tags:
+      Category: study
+      Assignment: core
+      Class: secondary
+      Template: 'Yes'
+    Props:
+      - image_collection_name
+      - image_type_included
+      - image_collection_url
+      - repository_name
+      - collection_access
+  subject:
+    Desc: text
+    Tags:
+      Category: case # temporarily, will actually be "subject"
+      Assignment: core
+      Class: primary
+      Template: 'Yes'
+    Props:
+      - subject_id
+      - biomarker_results_available
+      - radiology_report_available #6944764
+      - radiology_images_available
+      - histology_images_available
+  demographic:
+    Desc: the typical demographics
+    Tags:
+      Category: case # temporarily, will actually be "subject"
+      Assignment: core
+      Class: primary
+      Template: 'Yes'
+    Props:
+      - demographic_id
+      - sex
+      - reported_gender #10748236
+      - race
+      - ethnicity
+      - ncbi_taxonomy_id #10543100
+      - ncbi_taxonomy_name #10543082
+  exposure:
+    Desc: environmental, workplace and lifestyle exposure(s)
+    Tags:
+      Category: case # temporarily, will actually be "subject"
+      Assignment: core
+      Class: secondary
+      Template: 'Yes'
+    Props:
+      - exposure_id
+      - environmental_exposure_type #11256813
+      - carcinogen_exposure
+  diagnosis:
+    Desc: diagnosis
+    Tags:
+      Category: clinical
+      Assignment: core
+      Class: primary
+      Template: 'Yes'
+    Props:
+      - diagnosis_id
+      - icd_10_disease_code #11479873
+      - meddra_disease_code
+      - ctep_disease_code
+      - snomed_disease_code # this is disease plus stage I think
+      - diagnosis_date # quantified in days indexed to date of trial enrollment
+      - icd_o_primary_site #11341616
+      - primary_disease_site
+      - tumor_grade #11325685
+      - subject_age_at_diagnosis #10609539
+  treatment:
+    Desc: text
+    Tags:
+      Category: clinical
+      Assignment: core
+      Class: primary
+      Template: 'Yes'
+    Props:
+      - treatment_id
+      - x_targeted_therapy #6400634
+      - x_therapy #6400634
+      - x_surgical_procedure_name #6411539
+      - x_radiological_procedure_name #6411539
+  targeted_therapy:
+    Desc: text
+    Tags:
+      Category: treatment
+      Assignment: core
+      Class: secondary
+      Template: 'Yes'
+    Props:
+      - targeted_therapy_id
+      - targeted_therapy #6400634
+  therapy:
+    Desc: text
+    Tags:
+      Category: treatment
+      Assignment: core
+      Class: secondary
+      Template: 'Yes'
+    Props:
+      - therapy_id
+      - therapy #6400634
+  surgical_procedure:
+    Desc: text
+    Tags:
+      Category: treatment
+      Assignment: core
+      Class: secondary
+      Template: 'Yes'
+    Props:
+      - surgical_procedure_id
+      - surgical_procedure_name #6411539    
+  radiological_procedure:
+    Desc: text
+    Tags:
+      Category: treatment
+      Assignment: core
+      Class: secondary
+      Template: 'Yes'
+    Props:
+      - radiological_procedure_id
+      - radiological_procedure_name #6411539
+  subject_status:
+    Desc: text
+    Tags:
+      Category: clinical
+      Assignment: core
+      Class: secondary
+      Template: 'Yes'
+    Props:
+      - subject_status_id
+      - survival_status #7050072
+      - primary_cause_of_death #6421593
+      - off_study
+      - off_study_reason #6355981
+  specimen:
+    Desc: text
+    Tags:
+      Category: biospecimen
+      Assignment: core
+      Class: primary
+      Template: 'Yes'
+    Props:
+      - specimen_id
+      - parent_specimen_id
+      - days_from_diagnosis_to_specimen_collection #11253404
+      - diagnosis_date # from the CMB perspective, this is supposedly equivalent to the above, but because of the way this date is indexed to enrollment date, it should not be a specimen property
+      - days_from_first_subject_visit_to_specimen_collection #11248874
+      - days_from_first_treatment_to_specimen_collection #11250807
+      - days_from_initial_genomic_sequencing_to_Specimen_collection #11250807
+      - days_from_recurrence_to_specimen_collection #11251133
+      - days_from_specimen_collection_to_initial_pathologic_diagnosis #11253404
+      - collection_date # from the CMB perspective, this is equivalent to the above, with collection date indexed to enrollment date caDSR 6401821
+      - icd_o_3_tissue_morphology # 11326261
+      - obi_specimen_type #11253427 not a good match to the caDSR term reference by the CDE's ID
+      - specimen_category # confusingly close to the CMB Catalog Site's "Tissue Category" i.e. the indicator as to normal vs primary vs metastatic, but acceptable terms for caDSR 7069877, quoted as a reference for "specimen category" uses terms that do not relate to "tissue category"
+      - type_of_tissue #caDSR 7003892 this looks very much like the CMB Catalog Site's "Tissue Category"
+      - anatomical_collection_site
+      - parent_biospecimen_type
+      - biospecimen_type
+      - tissue_category # this would be the Catalog Site's "Tissue Category" i.e. the indicator as to normal vs primary vs metastatic, which appears within at least two of the DDs as Tissue Type
+      - assessment_timepoint # this appears to be the Catalog Site's "Collection Timepoint" caDSR 7065963
+  data_file:
+    Desc: file
+    Tags:
+      Category: data_file
+      Assignment: core
+      Class: primary
+      Template: 'Yes'
+    Props:
+      - data_file_name #11284037
+      - data_file_type
+      - data_file_description #11280338
+      - data_file_format #11416926
+      - data_file_size #11479876
+      - data_file_checksum_value #11480133
+      - data_file_checksum_type #11475057
+      - data_file_compression_status #11387114
+      - data_file_uuid
+      - data_file_location
+Relationships:
+  belongs_to:
+    Mul: many_to_one
+    Ends:
+      - Src: subject
+        Dst: study
+      - Src: study
+        Dst: project
+      - Src: study # so can a lowest-level study belong directly to a highest-level program?
+        Dst: program
+      #- Src: project # this relationship can be removed because project is above study?
+        #Dst: study
+      - Src: project # this seems legitimate
+        Dst: program     
+    Props: null
+  associated_with: # group all file relationships in here?
+    Mul: many_to_one
+    Ends:
+      - Src: data_file
+        Dst: specimen
+      - Src: data_file
+        Dst: diagnosis
+      - Src: data_file
+        Dst: subject
+      - Src: data_file
+        Dst: study
+      - Src: data_file
+        Dst: project
+      - Src: associated_link
+        Dst: study
+      - Src: associated_link
+        Dst: project  
+      - Src: image_collection
+        Dst: study
+      - Src: image_collection
+        Dst: project
+    Props: null      
+  #of_study:
+    #Mul: many_to_many
+    #Ends:
+      #- Src: principal_ivestigator # alternatively, express principal investigator relationships to both study and project elsewhere as "directs" relationships
+        #Dst: study
+      #- Src: data_file # alternatively, group all file relationships elsewhere as "associated_with" relationships?
+        #Dst: study
+        #Mul: many_to_one
+    #Props: null    
+  #of_project:
+    #Mul: many_to_many
+    #Ends:
+      #- Src: principal_investigator # alternatively, express principal investigator relationships to both study and project elsewhere as "directs" relationships
+        #Dst: project
+      #- Src: data_file # alternatively, group all file relationships elsewhere as "associated_with" relationships?
+        #Dst: project
+        #Mul: many_to_one
+    #Props: null    
+  of_subject:
+    Mul: many_to_one
+    Ends:
+      - Src: demographic
+        Dst: subject
+        Mul: one_to_one
+      - Src: exposure
+        Dst: subject
+      - Src: diagnosis
+        Dst: subject
+      - Src: treatment
+        Dst: subject
+      - Src: targeted_therapy
+        Dst: subject  
+      - Src: therapy
+        Dst: subject
+      - Src: surgical_procedure
+        Dst: subject
+      - Src: radiological_procedure
+        Dst: subject
+      - Src: subject_status
+        Dst: subject
+        Mul: one_to_one  
+        # to accommodate a Specimen being directly associated with a Subject, rather than being only indirectly associated with a Subject through a Visit, etc.
+      - Src: specimen
+        Dst: subject
+        # to accommodate a Data File being directly associated with a Subject, rather than being only indirectly associated with a Subject through a Specimen or Diagnosis
+      #- Src: data_file # alternatively, group all file relationships elsewhere as "associated_with" relationships?
+        #Dst: subject
+    Props: null
+  #of_specimen:
+    #Mul: many_to_one
+    #Ends:
+      #- Src: data_file # alternatively, group all file relationships elsewhere as "associated_with" relationships?
+        #Dst: specimen
+    #Props: null       
+  directs: 
+    Mul: many_to_many
+    Ends:
+      - Src: principal_investigator
+        Dst: project
+      - Src: principal_investigator
+        Dst: study
+    Props: null

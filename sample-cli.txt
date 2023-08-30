@@ -1,0 +1,8 @@
+sample cli:
+
+you need to install APOC plugin in Neo4j DB before loading data
+
+
+./my_env/bin/python3 ./loader.py /Users/cheny39/Documents/work/ctdc/crdc-ctdc-dataloader/cmb-data/cmb-local.yml --data /Users/cheny39/Documents/work/ctdc/crdc-ctdc-dataloader/cmb-data/2023-8-23
+
+
