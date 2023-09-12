@@ -10,11 +10,11 @@ Config:
     # # Neo4j password
     # password: "123456"
     #Location of Neo4j server, e.g., bolt://127.0.0.1:7687
-    uri: bolt://ncidb-d537-c:7687
+    uri: 
     # Neo4j username
     user: neo4j
     # Neo4j password
-    password: "ctdc_cmbDBneo4j0"
+    password: ""
 
   # Schema files' locations
   schema:
