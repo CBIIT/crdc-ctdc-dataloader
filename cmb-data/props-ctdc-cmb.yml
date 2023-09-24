@@ -49,10 +49,4 @@ Properties:
     specimen: specimen_id
     associated_link: associated_link_name
 
-    # node: nodes
-    # principal_investigator: principal_investigators
-    # targeted_therapy: targeted_therapies
-    # therapy: therapies
-    # surgical_procedure: surgical_procedures
-    # radiological_procedure: radiological_procedures
-    # data_file: data_files
+
