@@ -1,0 +1,17 @@
+Config:
+  # Neo4j URL with port number
+  neo4j_uri: "bolt://ncidb-d537-c:7687"
+  # Neo4j user name, default is neo4j
+  neo4j_user: neo4j
+  # Password for Neo4j user
+  neo4j_password: ctdc_cmbDBneo4j0
+  # Elastic search host name or IP, without trailing slash
+  es_host: https://vpc-crdc-dev-cmb-ctdc-opensearch-ncjphcvzrol7xet75ocw7hvw7e.us-east-1.es.amazonaws.com/
+  # Path to about file
+  about_file: path_to_about_yaml_file
+
+  model_files:
+    - /Users/cheny39/Documents/work/ctdc/crdc-ctdc-dataloader/cmb-data/ctdc_model_file.yml
+    - /Users/cheny39/Documents/work/ctdc/crdc-ctdc-dataloader/cmb-data/ctdc_model_properties_file.yml
+
+  prop_file: /Users/cheny39/Documents/work/ctdc/crdc-ctdc-dataloader/cmb-data/props-ctdc-cmb.yml
