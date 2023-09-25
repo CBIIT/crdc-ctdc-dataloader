@@ -1,0 +1,49 @@
+Config:
+  temp_folder: tmp
+  backup_folder: /tmp/data-loader-backups
+
+  neo4j:
+    # # Location of Neo4j server, e.g., bolt://127.0.0.1:7687
+    # uri: bolt://localhost:7687
+    # # Neo4j username
+    # user: neo4j
+    # # Neo4j password
+    # password: "123456"
+    #Location of Neo4j server, e.g., bolt://127.0.0.1:7687
+    uri: bolt://ncidb-d537-c:7687
+    # Neo4j username
+    user: neo4j
+    # Neo4j password
+    password: "ctdc_cmbDBneo4j0"
+
+  # Schema files' locations
+  schema:
+    - /Users/cheny39/Documents/work/ctdc/crdc-ctdc-dataloader/cmb-data/ctdc_model_file.yaml
+    - /Users/cheny39/Documents/work/ctdc/crdc-ctdc-dataloader/cmb-data/ctdc_model_properties_file.yaml
+
+  #Property file location
+  prop_file: /Users/cheny39/Documents/work/ctdc/crdc-ctdc-dataloader/cmb-data/props-ctdc-cmb.yml
+
+  # Skip validations, aka. Cheat Mode
+  cheat_mode: false
+  # Validations only, skip loading
+  dry_run: false
+  # Wipe out database before loading, you'll lose all data!
+  wipe_db: true
+  # Skip backup step
+  no_backup: true
+  split_transactions: false
+  # Automatically confirm deletion and database wiping (without asking user to confirm)
+  no_confirmation: true
+  # Max violations to display, default is 10
+  max_violations: 10
+  no_parents: true
+
+  # S3 bucket name, if you are loading from an S3 bucket
+  s3_bucket:
+  # S3 folder for dataset
+  s3_folder:
+  # Loading mode, can be upsert, new or delete, default is upsert
+  loading_mode: upsert
+  # Location of dataset
+  dataset:
