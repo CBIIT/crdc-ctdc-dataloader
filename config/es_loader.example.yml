@@ -1,6 +1,6 @@
 Config:
   # Neo4j URL with port number
-  neo4j_uri: "bolt://127.0.0.1:7687"
+  neo4j_uri: 'bolt://127.0.0.1:7687'
   # Neo4j user name, default is neo4j
   neo4j_user: neo4j
   # Password for Neo4j user
@@ -9,6 +9,8 @@ Config:
   es_host: localhost
   # Path to about file
   about_file: path_to_about_yaml_file
+  # Boolean flag indicating whether to apply formatting cleaning to the content from the about/static page.
+  clean_about_page_format: True
 
   model_files:
     - bento-model/model-desc/bento_tailorx_model_file.yaml

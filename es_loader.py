@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 
+import re
 import os
 import yaml
 from elasticsearch import Elasticsearch, RequestsHttpConnection
@@ -93,7 +94,7 @@ class ESLoader:
             successes += 1 if ok else 0
         logger.info(f"Indexed {successes}/{total} documents")
 
-    def load_about_page(self, index_name, mapping, file_name):
+    def load_about_page(self, index_name, mapping, file_name, clean_about_page_format):
         logger.info('Indexing content from about page')
         if not os.path.isfile(file_name):
             raise Exception(f'"{file_name} is not a file!')
@@ -103,8 +104,30 @@ class ESLoader:
             about_file = yaml.safe_load(file_obj)
             for page in about_file:
                 logger.info(f'Indexing about page "{page["page"]}"')
+                cleaned_content = page['content']
+                if clean_about_page_format:
+                  cleaned_content = self.remove_formatting_content(page["page"], cleaned_content)
+                page['content'] = cleaned_content
                 self.index_data(index_name, page, f'page{page["page"]}')
-
+    
+    def remove_formatting_content(self, page_name, content):
+        cleaned_content = []
+        for item in content:
+            if isinstance(item, dict) and 'paragraph' in item:
+                # Remove inline links
+                cleaned_text = re.sub(r'\$\$\[(.*?)\]\(.*?\)\$\$', r'\1', item['paragraph'])
+                # Remove hash tags
+                cleaned_text = re.sub(r'\$\$#(.*?)#\$\$', r'\1', cleaned_text)
+                # Remove asterisk symbol
+                cleaned_text = re.sub(r'\$\$\*(.*?)\*\$\$', r'\1', cleaned_text)
+                # Remove extra spaces
+                cleaned_text = ' '.join(cleaned_text.split())
+                cleaned_content.append({'paragraph': cleaned_text})
+            else:
+                cleaned_content.append(item)
+        logger.info(f'Cleaned content for "{page_name}"')
+        return cleaned_content
+    
     def read_model(self, model_files, prop_file):
         for file_name in model_files:
             if not os.path.isfile(file_name):
@@ -207,7 +230,8 @@ def main():
             loader.load(index['index_name'], index['mapping'], index['cypher_query'])
         elif index['type'] == 'about_file':
             if 'about_file' in config:
-                loader.load_about_page(index['index_name'], index['mapping'], config['about_file'])
+                clean_about_page_format = config.get('clean_about_page_format', False)
+                loader.load_about_page(index['index_name'], index['mapping'], config['about_file'], clean_about_page_format)
             else:
                 logger.warning(f'"about_file" not set in configuration file, {index["index_name"]} will not be loaded!')
         elif index['type'] == 'model':
