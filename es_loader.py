@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import argparse
 
-import re
 import os
 import yaml
 from elasticsearch import Elasticsearch, RequestsHttpConnection
@@ -14,7 +13,6 @@ from bento.common.utils import get_logger, print_config
 from icdc_schema import ICDC_Schema, PROPERTIES, ENUM, PROP_ENUM, PROP_TYPE, REQUIRED, DESCRIPTION
 from props import Props
 from about_page_content_cleaner import AboutPageContentCleaner
-
 
 logger = get_logger('ESLoader')
 
