@@ -13,6 +13,8 @@ from neo4j import GraphDatabase
 from bento.common.utils import get_logger, print_config
 from icdc_schema import ICDC_Schema, PROPERTIES, ENUM, PROP_ENUM, PROP_TYPE, REQUIRED, DESCRIPTION
 from props import Props
+from about_page_content_cleaner import AboutPageContentCleaner
+
 
 logger = get_logger('ESLoader')
 
@@ -111,22 +113,8 @@ class ESLoader:
                 self.index_data(index_name, page, f'page{page["page"]}')
     
     def remove_formatting_content(self, page_name, content):
-        cleaned_content = []
-        for item in content:
-            if isinstance(item, dict) and 'paragraph' in item:
-                # Remove inline links
-                cleaned_text = re.sub(r'\$\$\[(.*?)\]\(.*?\)\$\$', r'\1', item['paragraph'])
-                # Remove hash tags
-                cleaned_text = re.sub(r'\$\$#(.*?)#\$\$', r'\1', cleaned_text)
-                # Remove asterisk symbol
-                cleaned_text = re.sub(r'\$\$\*(.*?)\*\$\$', r'\1', cleaned_text)
-                # Remove extra spaces
-                cleaned_text = ' '.join(cleaned_text.split())
-                cleaned_content.append({'paragraph': cleaned_text})
-            else:
-                cleaned_content.append(item)
-        logger.info(f'Cleaned content for "{page_name}"')
-        return cleaned_content
+        # Call remove_formatting_content from AboutPageContentCleaner
+        return AboutPageContentCleaner.remove_formatting_content(page_name, content)
     
     def read_model(self, model_files, prop_file):
         for file_name in model_files:
