@@ -4,8 +4,6 @@ Config:
   neo4j:
    # Location of Neo4j server, e.g., bolt://127.0.0.1:7687
 
-    # uri: neo4j://ncidb-q475-c:7687
-    # uri: bolt://localhost:7687
   # Schema files' locations
   schema:
     - /Users/davenportaw/Downloads/cmb-data/ctdc_model_file.yml
