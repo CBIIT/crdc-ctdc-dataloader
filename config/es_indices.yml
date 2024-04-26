@@ -1,0 +1,1165 @@
+# Indices settings
+Indices:
+  # First index
+  # Name of the index to be created, existing index with same name will be deleted
+  - index_name: study
+    type: neo4j
+    # type mapping for each property of the index
+    mapping:
+      study_short_name:
+        type: keyword
+      study_id:
+        type: keyword
+      study_name:
+        type: keyword
+      study_description:
+        type: keyword
+      study_type:
+        type: keyword
+      dates_of_conduct:
+        type: keyword
+      subjects:
+        type: nested
+        properties:
+          biomarker_results_available:
+            type: keyword
+          histology_images_available:
+            type: keyword
+          radiology_images_available:
+            type: keyword
+          radiology_report_available:
+            type: keyword
+          subject_id:
+            type: keyword
+      participant_count:
+        type: keyword
+      associated_links:
+        type: nested
+        properties:
+          associated_link_name:
+            type: keyword
+          associated_link_url:
+            type: keyword
+          associated_link_id:
+            type: keyword
+      image_collection:
+        type: nested
+        properties:
+          image_collection_name:
+            type: keyword
+          image_type_included:
+            type: keyword
+          image_collection_url:
+            type: keyword
+          repository_name:
+            type: keyword
+          collection_access:
+            type: keyword
+
+
+
+    # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
+    cypher_query: "
+      MATCH (s:study)
+      optional MATCH (s)<-[:associated_with]-(ic:image_collection)
+      optional MATCH (s)<-[:associated_with]-(al:associated_link)
+      optional MATCH (s)<-[:belongs_to]-(subject)
+       RETURN DISTINCT
+                s.study_name as study_name,
+                s.study_short_name as study_short_name,
+                s.study_id as study_id,
+                s.study_description as study_description,
+                s.study_type as study_type,
+                s.dates_of_conduct as dates_of_conduct,
+                COLLECT(DISTINCT{
+                    associated_link_name: al.associated_link_name,
+                    associated_link_url: al.associated_link_url,
+                    associated_link_id: al.associated_link_id
+                }) AS associated_links,
+                COLLECT(DISTINCT{
+                    image_collection_name: ic.image_collection_name,
+                    image_type_included: ic.image_type_included,
+                    image_collection_url: ic.image_collection_url,
+                    repository_name: ic.repository_name,
+                    collection_access: ic.collection_access
+                }) AS image_collection,
+                COLLECT(DISTINCT{
+                  biomarker_results_available: subject.biomarker_results_available,
+                  histology_images_available: subject.histology_images_available,
+                  radiology_images_available: subject.radiology_images_available,
+                  radiology_report_available: subject.radiology_report_available,
+                  subject_id: subject.subject_id
+                  })as subjects,
+                COUNT( DISTINCT subject) as participant_count
+      "
+      
+  - index_name: study_data_file
+    type: neo4j
+    # type mapping for each property of the index
+    mapping:
+      study_short_name:
+        type: keyword
+      list_type:
+        type: keyword
+      study_data_files:
+        type: nested
+        properties:
+          data_file_uuid:
+            type: keyword
+          data_file_name:
+            type: keyword
+          data_file_type:
+            type: keyword
+          data_file_description:
+            type: keyword
+          data_file_format:
+            type: keyword
+          data_file_size:
+            type: keyword
+          data_file_checksum_value:
+            type: keyword
+          data_file_checksum_type:
+            type: keyword
+          data_file_compression_status:
+            type: keyword
+          data_file_location:
+            type: keyword
+      data_files:
+        type: nested
+        properties:
+          data_file_uuid:
+            type: keyword
+          data_file_name:
+            type: keyword
+          data_file_type:
+            type: keyword
+          data_file_description:
+            type: keyword
+          data_file_format:
+            type: keyword
+          data_file_size:
+            type: keyword
+          data_file_checksum_value:
+            type: keyword
+          data_file_checksum_type:
+            type: keyword
+          data_file_compression_status:
+            type: keyword
+          data_file_location:
+            type: keyword
+
+    # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
+    cypher_query: "
+       MATCH (s:study)<-[:belongs_to]-(sb:subject)
+       MATCH (s:study)<-[:associated_with]-(study_file:data_file)
+      optional MATCH (sb:subject)<-[*..2]-(df:data_file)
+      RETURN DISTINCT 
+        s.study_short_name as study_short_name,
+        COLLECT(DISTINCT{
+                    data_file_uuid: study_file.data_file_uuid,
+                    data_file_name: study_file.data_file_name,
+                    data_file_type: study_file.data_file_type,
+                    data_file_description: study_file.data_file_description,
+                    data_file_format: study_file.data_file_format,
+                    data_file_size: study_file.data_file_size,
+                    data_file_checksum_value: study_file.data_file_checksum_value,
+                    data_file_checksum_type: study_file.data_file_checksum_type,
+                    data_file_compression_status: study_file.data_file_compression_status,
+                    data_file_location: study_file.data_file_location
+                }) AS study_data_files,
+        COLLECT(DISTINCT{
+                    data_file_uuid: df.data_file_uuid,
+                    data_file_name: df.data_file_name,
+                    data_file_type: df.data_file_type,
+                    data_file_description: df.data_file_description,
+                    data_file_format: df.data_file_format,
+                    data_file_size: df.data_file_size,
+                    data_file_checksum_value: df.data_file_checksum_value,
+                    data_file_checksum_type: df.data_file_checksum_type,
+                    data_file_compression_status: df.data_file_compression_status,
+                    data_file_location: df.data_file_location
+                }) AS data_files,
+         COLLECT(DISTINCT df.data_file_type) as list_type
+      "
+  # Name of the index to be created, existing index with same name will be deleted
+  - index_name: study_specimen
+    type: neo4j
+    # type mapping for each property of the index
+    mapping:
+      study_short_name:
+        type: keyword
+      specimen_types:
+        type: nested
+        properties:
+          group:
+            type: keyword
+          count:
+            type: keyword
+      specimen_timepoints:
+        type: nested
+        properties:
+          group:
+            type: keyword
+          count:
+            type: keyword
+      sample_count:
+        type: keyword
+      specimen:
+        type: nested
+        properties:
+          specimen_id:
+            type: keyword
+          parent_specimen_id:
+            type: keyword
+          collection_date:
+            type: keyword
+          icd_o_3_tissue_morphology:
+            type: keyword
+          obi_specimen_type:
+            type: keyword
+          type_of_tissue:
+            type: keyword
+          anatomical_collection_site:
+            type: keyword
+          parent_specimen_type:
+            type: keyword
+          specimen_type:
+            type: keyword
+          tissue_category:
+            type: keyword
+          assessment_timepoint:
+            type: keyword
+    cypher_query: "
+      MATCH (s:study)<-[:belongs_to]-(subject)<-[:of_subject]-(sp:specimen)
+      WITH COUNT(sp) AS sample_count
+      MATCH (s:study)<-[:belongs_to]-(subject)<-[:of_subject]-(sp:specimen)
+      WITH DISTINCT sp.specimen_type AS biospecimen_type, COUNT(sp) AS count1, sample_count
+
+      MATCH (s:study)<-[:belongs_to]-(subject)<-[:of_subject]-(sp:specimen)
+      WITH DISTINCT sp.assessment_timepoint AS assessment_timepoint, COUNT(sp) AS count2, biospecimen_type, count1, sample_count
+      MATCH (s:study)<-[:belongs_to]-(subject)<-[:of_subject]-(sp:specimen)
+      WITH sample_count, biospecimen_type, count1, assessment_timepoint, count2, s, sp
+      RETURN DISTINCT
+          s.study_short_name AS study_short_name,
+          COLLECT(DISTINCT{group: assessment_timepoint, count: count2}) AS specimen_timepoints,
+          COLLECT(DISTINCT{group: biospecimen_type, count: count1}) AS specimen_types,
+          COLLECT(DISTINCT{
+            specimen_id:sp.specimen_id,
+            parent_specimen_id:sp.parent_specimen_id,
+            collection_date:sp.collection_date,
+            icd_o_3_tissue_morphology: sp.icd_o_3_tissue_morphology,
+            obi_specimen_type: sp.obi_specimen_type,
+            type_of_tissue:  sp.type_of_tissue,
+            anatomical_collection_site: sp.anatomical_collection_site,
+            parent_specimen_type: sp.parent_specimen_type,
+            specimen_type: sp.specimen_type,
+            tissue_category: sp.tissue_category,
+            assessment_timepoint: sp.assessment_timepoint
+            }) as specimen,
+            sample_count
+      "
+
+  - index_name: study_diagnosis
+    type: neo4j
+    # type mapping for each property of the index
+    mapping:
+      study_short_name:
+        type: keyword
+      diagnosis:
+        type: nested
+        properties:
+          ctep_disease_term:
+            type: keyword
+          diagnosis_date:
+            type: keyword
+          diagnosis_date_original:
+            type: keyword
+          diagnosis_date_original_unit:
+            type: keyword
+          diagnosis_date_unit:
+            type: keyword
+          diagnosis_id:
+            type: keyword
+          icd_10_disease_code:
+            type: keyword
+          icd_o_primary_site:
+            type: keyword
+          meddra_disease_code:
+            type: keyword
+          primary_disease_site:
+            type: keyword
+          snomed_disease_code:
+            type: keyword
+          stage_of_disease:
+            type: keyword
+          subject_age_at_diagnosis:
+            type: keyword
+          subject_age_at_diagnosis_original:
+            type: keyword
+          subject_age_at_diagnosis_original_unit:
+            type: keyword
+          subject_age_at_diagnosis_unit:
+            type: keyword
+          tumor_grade:
+            type: keyword
+      ctep_disease_terms:
+        type: keyword
+
+    # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
+    cypher_query: "
+        MATCH (s:study)
+        optional MATCH (s:study)<-[:belongs_to]-(subject)<-[:of_subject]-(sd:diagnosis)
+        RETURN DISTINCT
+            s.study_short_name AS study_short_name,
+            COLLECT(DISTINCT sd.ctep_disease_term) as ctep_disease_terms,
+            COLLECT(DISTINCT{ctep_disease_term: sd.ctep_disease_term,
+            diagnosis_date: sd.diagnosis_date,
+            diagnosis_date_original: sd.diagnosis_date_original,
+            diagnosis_date_original_unit: sd.diagnosis_date_original_unit,
+            diagnosis_date_unit: sd.diagnosis_date_unit,
+            diagnosis_id: sd.diagnosis_id,
+            icd_10_disease_code: sd.icd_10_disease_code,
+            icd_o_primary_site: sd.icd_o_primary_site,
+            meddra_disease_code: sd.meddra_disease_code,
+            primary_disease_site: sd.primary_disease_site,
+            snomed_disease_code: sd.snomed_disease_code,
+            stage_of_disease: sd.stage_of_disease,
+            subject_age_at_diagnosis: sd.subject_age_at_diagnosis,
+            subject_age_at_diagnosis_original: sd.subject_age_at_diagnosis_original,
+            subject_age_at_diagnosis_original_unit: sd.subject_age_at_diagnosis_original_unit,
+            subject_age_at_diagnosis_unit: sd.subject_age_at_diagnosis_unit,
+            tumor_grade: sd.tumor_grade}) as diagnosis
+      "
+  # Supplies Hero Image information for the front page
+  - index_name: home_page
+    type: neo4j
+    # type mapping for each property of the index
+    mapping:
+      numberOfParticipants:
+        type: keyword
+      numberOfDiagnoses:
+        type: keyword
+      numberOfTargeted:
+        type: keyword
+      numberOfNonTargeted:
+        type: keyword
+      numberOfTherapies:
+        type: keyword
+      dataFileCount:
+        type: keyword
+      specimenCountbyStageOfDisease:
+        type: nested
+        properties:
+          group:
+            type: keyword
+          subjects:
+            type: keyword
+      dataFileByType:
+        type: nested
+        properties:
+          group:
+            type: keyword
+          subjects:
+            type: keyword
+  
+    # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
+    cypher_query: "
+        MATCH (sub:subject)<-[*..2]-(df:data_file)
+        WITH
+        {
+        group: df.data_file_type,
+        subjects:count(df.data_file_type)}
+         as dataFileByType
+        MATCH (df:data_file) WHERE df.data_file_format <> 'zip' with dataFileByType , count(df) as dataFileCount
+        MATCH (sb:subject) WITH count(sb) as subjectcount,dataFileByType,dataFileCount
+        MATCH (target:targeted_therapy) WHERE target.targeted_therapy <> '' WITH target,subjectcount,dataFileByType,dataFileCount
+        MATCH (untargeted:non_targeted_therapy) WITH count(DISTINCT(untargeted.targeted_therapy)) as untargetedTherapyCount ,subjectcount,target,dataFileByType,dataFileCount
+        WITH subjectcount,count(distinct(target.targeted_therapy)) as targetTherapyCount,dataFileByType,dataFileCount,untargetedTherapyCount
+
+        MATCH (diag:diagnosis) with
+        count(distinct(diag.ctep_disease_term)) as countofDiagnoses ,untargetedTherapyCount,targetTherapyCount,subjectcount,untargetedTherapyCount + targetTherapyCount as TotalTherapy,dataFileByType,dataFileCount
+
+        MATCH (sp:specimen)-[:of_subject]->(sb:subject)<-[:of_subject]-(diag:diagnosis) 
+        WITH targetTherapyCount,countofDiagnoses,subjectcount,untargetedTherapyCount,TotalTherapy,dataFileByType,dataFileCount,
+        {
+        group: diag.stage_of_disease,
+        subjects:count(diag.stage_of_disease)}
+         as specimenCountbyStageOfDisease        
+        
+        RETURN DISTINCT
+              
+              TotalTherapy as numberOfTherapies,
+              subjectcount as numberOfParticipants,
+              countofDiagnoses as numberOfDiagnoses,
+              untargetedTherapyCount as numberOfNonTargeted,
+              targetTherapyCount as numberOfTargeted,
+                dataFileCount as dataFileCount,
+            apoc.coll.toSet(COLLECT(specimenCountbyStageOfDisease)) as specimenCountbyStageOfDisease,
+            apoc.coll.toSet(COLLECT(dataFileByType)) as dataFileByType
+      "
+      
+  - index_name: widgets_facets_counts
+    type: neo4j
+    # Widgets,Facets,and Global Stats bar
+    mapping:
+      type:
+        type: keyword
+      study_short_name:
+        type: keyword
+      ctep_disease_term:
+        type: keyword
+      snomed_disease_code:
+        type: keyword
+      tumor_grade:
+        type: keyword
+      stage_of_disease:
+        type: keyword
+      diagnosis_id:
+        type: keyword
+      sex:
+        type: keyword
+      reported_gender:
+        type: keyword
+      race:
+        type: keyword
+      ethnicity:
+        type: keyword
+      carcinogen_exposure:
+        type: keyword
+      targeted_therapy:
+        type: keyword
+      targeted_therapy_id:
+        type: keyword
+      anatomical_collection_site:
+        type: keyword
+      specimen_type:
+        type: keyword
+      tissue_category:
+        type: keyword
+      assessment_timepoint:
+        type: keyword
+      specimen_id:
+        type: keyword
+      parent_specimen_type:
+        type: keyword
+      data_file_uuid:
+        type: keyword
+      data_file_type:
+        type: keyword
+      data_file_format:
+        type: keyword
+      biospecimen_info:
+        type: nested
+        properties:
+          specimen_id:
+            type: keyword
+          anatomical_collection_site:
+            type: keyword
+          specimen_type:
+            type: keyword
+          tissue_category:
+            type: keyword
+          assessment_timepoint:
+            type: keyword
+      file_info:
+        type: nested
+        properties:
+          data_file_uuid:
+            type: keyword
+          data_file_type:
+            type: keyword
+          data_file_format:
+            type: keyword
+      subject_id:
+        type: keyword
+    # Cypher query will be used to retrieve data from Neo4j, and index into Elasticsearch
+    cypher_query: "
+      MATCH (study:study)<-[:belongs_to]-(sb:subject)
+      optional MATCH (spec:specimen)-[:of_subject]->(sb)
+      optional MATCH (sb)<-[*..2]-(data_file:data_file)
+      optional MATCH (demo:demographic)-[:of_subject]->(sb)
+      optional MATCH (diag:diagnosis)-[:of_subject]->(sb)
+      optional MATCH (target:targeted_therapy)-[:of_subject]->(sb)
+      optional MATCH (expose:exposure)-[:of_subject]->(sb)
+      RETURN DISTINCT
+      'participants' as type,
+      sb.subject_id as subject_id,
+      COLLECT(DISTINCT study.study_short_name) as study_short_name,
+      COLLECT(DISTINCT diag.ctep_disease_term) as ctep_disease_term,
+      COLLECT(DISTINCT diag.snomed_disease_code) as snomed_disease_code, 
+      COLLECT(DISTINCT diag.tumor_grade) as tumor_grade,
+      COLLECT(DISTINCT diag.stage_of_disease) as stage_of_disease,
+      COLLECT(DISTINCT diag.diagnosis_id) as diagnosis_id,
+      COLLECT(DISTINCT demo.sex) as sex,
+      COLLECT(DISTINCT demo.reported_gender) as reported_gender,
+      COLLECT(DISTINCT demo.race) as race,
+      COLLECT(DISTINCT demo.ethnicity) as ethnicity,
+      COLLECT(DISTINCT expose.carcinogen_exposure) as carcinogen_exposure,
+      COLLECT(DISTINCT target.targeted_therapy) as targeted_therapy,
+      COLLECT(DISTINCT target.targeted_therapy_id) as targeted_therapy_id,
+      COLLECT(DISTINCT spec.anatomical_collection_site) AS anatomical_collection_site,
+      COLLECT(DISTINCT spec.specimen_type) AS specimen_type,
+      COLLECT(DISTINCT spec.tissue_category) AS tissue_category,
+      COLLECT(DISTINCT spec.assessment_timepoint) AS assessment_timepoint,
+      COLLECT(DISTINCT spec.specimen_id) AS specimen_id,
+      COLLECT(DISTINCT COALESCE(spec.parent_specimen_type, '')) AS parent_specimen_type,
+      COLLECT(DISTINCT data_file.data_file_type) AS data_file_type,
+      COLLECT(DISTINCT data_file.data_file_uuid) AS data_file_uuid,
+      COLLECT(DISTINCT data_file.data_file_format) AS data_file_format,
+      COLLECT(DISTINCT{
+        specimen_id: spec.specimen_id,
+        anatomical_collection_site: spec.anatomical_collection_site,
+        specimen_type: spec.specimen_type,
+        tissue_category: spec.tissue_category,
+        assessment_timepoint: spec.assessment_timepoint
+      }) AS biospecimen_info,
+      COLLECT(DISTINCT{
+        data_file_uuid: data_file.data_file_uuid,
+        data_file_format: data_file.data_file_format,
+        data_file_type: data_file.data_file_type
+      }) AS file_info
+      "
+  # Participant Table Data
+  - index_name: tab_participants
+    type: neo4j
+    # type mapping for each property of the index
+    mapping:
+      type:
+        type: keyword
+      subject_id:
+        type: keyword
+      study_short_name:
+        type: keyword
+      ctep_disease_term:
+        type: keyword
+      stage_of_disease:
+        type: keyword
+      tumor_grade:
+        type: keyword
+      age_at_enrollment:
+        type: integer
+      sex:
+        type: keyword
+      reported_gender:
+        type: keyword
+      race:
+        type: keyword
+      ethnicity:
+        type: keyword
+      carcinogen_exposure:
+        type: keyword
+      targeted_therapy:
+        type: keyword
+      data_files:
+        type: nested
+        properties:
+          data_file_uuid:
+            type: keyword
+          data_file_name:
+            type: keyword
+          data_file_type:
+            type: keyword
+          data_file_description:
+            type: keyword
+          data_file_format:
+            type: keyword
+          data_file_size:
+            type: keyword
+          data_file_checksum_value:
+            type: keyword
+          data_file_checksum_type:
+            type: keyword
+          data_file_compression_status:
+            type: keyword
+          data_file_location:
+            type: keyword
+      data_file_uuid:
+        type: keyword
+      specimen_id:
+        type: keyword
+      anatomical_collection_site:
+        type: keyword
+      specimen_type:
+        type: keyword
+      tissue_category:
+        type: keyword
+      assessment_timepoint:
+        type: keyword
+      
+      # Facets section: Data Files
+      data_file_type:
+        type: keyword
+      data_file_format:
+        type: keyword
+    cypher_query: "
+      MATCH (study:study)<-[:belongs_to]-(sb:subject)
+      optional MATCH (sb:subject)<-[*..2]-(df:data_file)
+      optional MATCH (sb)<-[:of_subject]-(diag:diagnosis)
+      optional MATCH (sb)<-[:of_subject]-(spec:specimen)
+      optional MATCH (sb)<-[:of_subject]-(demo:demographic)
+      optional MATCH (sb)<-[:of_subject]-(exp:exposure)
+      optional MATCH (sb)<-[:of_subject]-(tt:targeted_therapy)
+      RETURN DISTINCT
+      'participants' AS type,
+      sb.subject_id AS subject_id,
+      study.study_short_name as study_short_name,
+      diag.ctep_disease_term AS ctep_disease_term,
+      diag.stage_of_disease AS stage_of_disease,
+      diag.tumor_grade AS tumor_grade,
+      demo.age_at_enrollment as age_at_enrollment,
+      demo.sex AS sex,
+      demo.reported_gender AS reported_gender,
+      demo.race AS race,
+      demo.ethnicity AS ethnicity,
+      COALESCE(exp.carcinogen_exposure,'') AS carcinogen_exposure,
+      COLLECT(DISTINCT(tt.targeted_therapy)) AS targeted_therapy,
+      COLLECT(DISTINCT{
+        data_file_uuid: df.data_file_uuid,
+        data_file_name: df.data_file_name,
+        data_file_type: df.data_file_type,
+        data_file_description: df.data_file_description,
+        data_file_format: df.data_file_format,
+        data_file_size: df.data_file_size,
+        data_file_checksum_value: df.data_file_checksum_value,
+        data_file_checksum_type: df.data_file_checksum_type,
+        data_file_compression_status: df.data_file_compression_status,
+        data_file_location: df.data_file_location
+      }) AS data_files,
+
+      COLLECT(DISTINCT(df.data_file_uuid)) AS data_file_uuid,
+
+      COLLECT(DISTINCT(spec.specimen_id)) AS specimen_id,
+      COLLECT(DISTINCT(spec.anatomical_collection_site)) AS anatomical_collection_site,
+      COLLECT(DISTINCT(spec.specimen_type)) AS specimen_type,
+      COLLECT(DISTINCT(spec.tissue_category)) AS tissue_category,
+      COLLECT(DISTINCT(spec.assessment_timepoint)) AS assessment_timepoint,
+
+      COLLECT(DISTINCT(df.data_file_type)) AS data_file_type,
+      COLLECT(DISTINCT(df.data_file_format)) AS data_file_format
+      
+      ORDER BY COALESCE(sb.subject_id, '') ASC"
+
+  # Biospecimen Table Data
+  - index_name: tab_biospecimens
+    type: neo4j
+    mapping:
+      type:
+        type: keyword
+      subject_id:
+        type: keyword
+      study_short_name:
+        type: keyword
+      ctep_disease_term:
+        type: keyword
+      stage_of_disease:
+        type: keyword
+      primary_disease_site:
+        type: keyword
+      specimen_id:
+        type: keyword
+      parent_specimen_id:
+        type: keyword
+      parent_specimen_type:
+        type: keyword
+      anatomical_collection_site:
+        type: keyword
+      specimen_type:
+        type: keyword
+      tissue_category:
+        type: keyword
+      assessment_timepoint:
+        type: keyword
+      data_files:
+        type: nested
+        properties:
+          data_file_uuid:
+            type: keyword
+          data_file_name:
+            type: keyword
+          data_file_type:
+            type: keyword
+          data_file_description:
+            type: keyword
+          data_file_format:
+            type: keyword
+          data_file_size:
+            type: keyword
+          data_file_checksum_value:
+            type: keyword
+          data_file_checksum_type:
+            type: keyword
+          data_file_compression_status:
+            type: keyword
+          data_file_location:
+            type: keyword
+      biospecimen_info:
+        type: nested
+        properties:
+          parent_specimen_id:
+            type: keyword
+          specimen_id:
+            type: keyword
+          anatomical_collection_site:
+            type: keyword
+          specimen_type:
+            type: keyword
+          tissue_category:
+            type: keyword
+          assessment_timepoint:
+            type: keyword
+      data_file_uuid:
+        type: keyword
+
+      tumor_grade:
+        type: keyword
+      sex:
+        type: keyword
+      reported_gender:
+        type: keyword
+      race:
+        type: keyword
+      ethnicity:
+        type: keyword
+      carcinogen_exposure:
+        type: keyword
+      targeted_therapy:
+        type: keyword
+        
+      data_file_type:
+        type: keyword
+      data_file_format:
+        type: keyword
+      
+    # Cypher query for biospecimen listing
+    # TODO: Remove Collection over exposure property once 1:1
+    # TODO: Make sure diagnosis is 1:1 with subject
+    cypher_query: "
+      MATCH (spec:specimen)-[:of_subject]->(sub:subject)
+      optional MATCH (study:study)<-[:belongs_to]-(sub)
+      optional MATCH (sub)<-[:of_subject]-(diag:diagnosis)
+      optional MATCH (sub)<-[:of_subject]-(demo:demographic)
+      optional MATCH (sub)<-[:of_subject]-(exp:exposure)
+      optional MATCH (sub)<-[:of_subject]-(tt:targeted_therapy)
+      optional MATCH (sub)<-[*..2]-(df:data_file)
+      RETURN DISTINCT
+        'biospecimens' AS type,
+        sub.subject_id AS subject_id,
+        diag.ctep_disease_term AS ctep_disease_term,
+        diag.stage_of_disease AS stage_of_disease,
+        diag.primary_disease_site AS primary_disease_site,
+        spec.specimen_id AS specimen_id,
+        spec.parent_specimen_id AS parent_specimen_id,
+        spec.parent_specimen_type AS parent_specimen_type,
+        spec.anatomical_collection_site AS anatomical_collection_site,
+        spec.specimen_type AS specimen_type,
+        spec.tissue_category AS tissue_category,
+        spec.assessment_timepoint AS assessment_timepoint,
+        study.study_short_name as study_short_name,
+        COLLECT(DISTINCT{
+          data_file_uuid: df.data_file_uuid,
+          data_file_name: df.data_file_name,
+          data_file_type: df.data_file_type,
+          data_file_description: df.data_file_description,
+          data_file_format: df.data_file_format,
+          data_file_size: df.data_file_size,
+          data_file_checksum_value: df.data_file_checksum_value,
+          data_file_checksum_type: df.data_file_checksum_type,
+          data_file_compression_status: df.data_file_compression_status,
+          data_file_location: df.data_file_location
+        }) AS data_files,
+        COLLECT(DISTINCT{
+          parent_specimen_id: spec.parent_specimen_id,
+          specimen_id: spec.specimen_id,
+          anatomical_collection_site: spec.anatomical_collection_site,
+          specimen_type: spec.specimen_type,
+          tissue_category: spec.tissue_category,
+          assessment_timepoint: spec.assessment_timepoint
+      }) AS biospecimen_info,
+        COLLECT(DISTINCT(df.data_file_uuid)) AS data_file_uuid,
+  
+        COLLECT(DISTINCT(diag.tumor_grade )) AS tumor_grade,
+        demo.sex AS sex,
+        demo.reported_gender AS reported_gender,
+        demo.race AS race,
+        demo.ethnicity AS ethnicity,
+        COLLECT(DISTINCT(exp.carcinogen_exposure)) AS carcinogen_exposure,
+        COLLECT(DISTINCT(tt.targeted_therapy)) AS targeted_therapy,
+
+        COLLECT(DISTINCT(df.data_file_type)) AS data_file_type,
+        COLLECT(DISTINCT(df.data_file_format)) AS data_file_format
+
+      ORDER BY COALESCE(spec.specimen_id, '') ASC"
+  # File Table Data, Add files into cart (For Participant Tab, Biospecimen Tab, and File Tab)
+  - index_name: tab_data_files
+    type: neo4j
+    # type mapping for each property of the index
+    mapping:
+      type:
+        type: keyword
+      data_file_name:
+        type: keyword
+      data_file_format:
+        type: keyword
+      data_file_type:
+        type: keyword
+      data_file_size:
+        type: keyword
+      data_file_description:
+        type: keyword
+      data_file_checksum_value:
+        type: keyword
+      data_file_checksum_type:
+        type: keyword
+      data_file_location:
+        type: keyword
+      data_file_compression_status:
+        type: keyword
+      association:
+        type: keyword
+      subject_id:
+        type: keyword
+      specimen_id:
+        type: keyword
+      ctep_disease_term:
+        type: keyword
+      meddra_disease_code:
+        type: keyword
+      histology:
+        type: keyword
+      data_file_uuid: 
+        type: keyword
+      stage_of_disease:
+        type: keyword
+      tumor_grade:
+        type: keyword
+      sex:
+        type: keyword
+      reported_gender:
+        type: keyword
+      race:
+        type: keyword
+      ethnicity:
+        type: keyword
+      age_at_enrollment:
+        type: keyword
+      carcinogen_exposure:
+        type: keyword
+      targeted_therapy:
+        type: keyword
+      anatomical_collection_site:
+        type: keyword
+      specimen_type:
+        type: keyword
+      tissue_category:
+        type: keyword
+      assessment_timepoint:
+        type: keyword
+      file_info:
+        type: nested
+        properties:
+          data_file_uuid:
+            type: keyword
+          data_file_type:
+            type: keyword
+          data_file_format:
+            type: keyword
+      parent_specimen_id:
+        type: keyword
+      primary_disease_site:
+        type: keyword
+    cypher_query: "
+      MATCH (sub:subject)<-[*..2]-(parent)<--(f:data_file)
+      optional MATCH (f:data_file)-[:associated_with]->(spec:specimen)
+      optional MATCH (sub)<-[:of_subject]-(diag:diagnosis)
+      optional MATCH (sub)<-[:of_subject]-(demo:demographic)
+      optional MATCH (sub)<-[:of_subject]-(exp:exposure)
+      optional MATCH (sub)<-[:of_subject]-(tt:targeted_therapy)
+      RETURN DISTINCT
+
+        'data file' AS type,
+        f.data_file_name AS data_file_name,
+        f.data_file_format AS data_file_format,
+        f.data_file_type AS data_file_type,
+        f.data_file_size AS data_file_size,
+        f.data_file_uuid AS data_file_uuid,
+        f.data_file_description AS data_file_description,
+        f.data_file_checksum_value AS data_file_checksum_value,
+        f.data_file_checksum_type AS data_file_checksum_type,
+        f.data_file_location AS data_file_location,
+        f.data_file_compression_status AS data_file_compression_status,
+        'biospecimen' AS association,
+
+       
+        COALESCE(spec.specimen_id, ' ') as specimen_id,
+        sub.subject_id AS subject_id,
+      
+        diag.ctep_disease_term AS ctep_disease_term,
+        
+        diag.stage_of_disease AS stage_of_disease,
+        diag.tumor_grade AS tumor_grade,
+        diag.primary_disease_site as primary_disease_site,
+        diag.meddra_disease_code as meddra_disease_code,
+        diag.histology as histology,
+
+        demo.sex AS sex,
+        demo.reported_gender AS reported_gender,
+        demo.race AS race,
+        demo.ethnicity AS ethnicity,
+        demo.age_at_enrollment AS age_at_enrollment,
+      
+        COLLECT(DISTINCT(exp.carcinogen_exposure)) AS carcinogen_exposure,
+        COLLECT(DISTINCT(tt.targeted_therapy)) AS targeted_therapy,
+        
+        spec.anatomical_collection_site AS anatomical_collection_site,
+        spec.specimen_type AS specimen_type,
+        spec.tissue_category AS tissue_category,
+        spec.assessment_timepoint AS assessment_timepoint,
+        spec.parent_specimen_id AS parent_specimen_id,
+
+        COLLECT(DISTINCT{
+          data_file_uuid: f.data_file_uuid,
+          data_file_format: f.data_file_format,
+          data_file_type: f.data_file_type
+        }) AS file_info
+      
+      UNION
+
+      MATCH (sub:subject)<-[:associated_with]-(f:data_file)
+      optional MATCH (f:data_file)-[:associated_with]->(spec:specimen)
+      optional MATCH (sub)<-[:of_subject]-(diag:diagnosis)
+      optional MATCH (sub)<-[:of_subject]-(demo:demographic)
+      optional MATCH (sub)<-[:of_subject]-(exp:exposure)
+      optional MATCH (sub)<-[:of_subject]-(tt:targeted_therapy)
+ 
+      RETURN DISTINCT
+        'data file' AS type,
+        f.data_file_name AS data_file_name,
+        f.data_file_format AS data_file_format,
+        f.data_file_type AS data_file_type,
+        f.data_file_size AS data_file_size,
+        f.data_file_uuid AS data_file_uuid,
+        f.data_file_description AS data_file_description,
+        f.data_file_checksum_value AS  data_file_checksum_value,
+        f.data_file_checksum_type AS data_file_checksum_type,
+        f.data_file_location AS data_file_location,
+        f.data_file_compression_status AS data_file_compression_status,
+        'participant' AS association,
+        COALESCE(spec.specimen_id, '') as specimen_id,
+        sub.subject_id AS subject_id,
+      
+      
+        diag.stage_of_disease AS stage_of_disease,
+        diag.tumor_grade AS tumor_grade,
+        diag.primary_disease_site as primary_disease_site,
+        diag.ctep_disease_term as ctep_disease_term,
+        diag.meddra_disease_code as meddra_disease_code,
+        diag.histology as histology,
+
+        demo.sex AS sex,
+        demo.reported_gender AS reported_gender,
+        demo.race AS race,
+        demo.ethnicity AS ethnicity,
+        demo.age_at_enrollment AS age_at_enrollment,
+
+
+        COLLECT(DISTINCT(exp.carcinogen_exposure)) AS carcinogen_exposure,
+        COLLECT(DISTINCT(tt.targeted_therapy)) AS targeted_therapy,
+        
+        spec.anatomical_collection_site AS anatomical_collection_site,
+        spec.specimen_type AS specimen_type,
+        spec.tissue_category AS tissue_category,
+        spec.assessment_timepoint AS assessment_timepoint,
+        spec.parent_specimen_id AS parent_specimen_id,
+
+        COLLECT(DISTINCT{
+          data_file_uuid: f.data_file_uuid,
+          data_file_format: f.data_file_format,
+          data_file_type: f.data_file_type
+        }) AS file_info "
+  #Handles datafiles only related to Biospecimen
+  - index_name: biospecimen_data_file
+    type: neo4j
+    # type mapping for each property of the index
+    mapping:
+      type:
+        type: keyword
+      data_file_name:
+        type: keyword
+      data_file_format:
+        type: keyword
+      data_file_type:
+        type: keyword
+      data_file_size:
+        type: keyword
+      data_file_uuid: 
+        type: keyword
+      data_file_description:
+        type: keyword
+
+      subject_id:
+        type: keyword
+      specimen_id:
+        type: keyword
+      ctep_disease_term:
+        type: keyword
+      stage_of_disease:
+        type: keyword
+      tumor_grade:
+        type: keyword
+      sex:
+        type: keyword
+      reported_gender:
+        type: keyword
+      race:
+        type: keyword
+      ethnicity:
+        type: keyword
+      carcinogen_exposure:
+        type: keyword
+      targeted_therapy:
+        type: keyword
+      
+      # Facets section: Biospecimens
+      anatomical_collection_site:
+        type: keyword
+      specimen_type:
+        type: keyword
+      tissue_category:
+        type: keyword
+      assessment_timepoint:
+        type: keyword
+    cypher_query: "
+      MATCH (sub:subject)<-[*..2]-(parent)<--(f:data_file)
+      optional MATCH (f:data_file)-[:associated_with]->(study:study)
+      optional MATCH (f:data_file)-[:associated_with]->(spec:specimen)
+      MATCH (sub)<-[:of_subject]-(diag:diagnosis)
+      MATCH (sub)<-[:of_subject]-(demo:demographic)
+      optional MATCH (sub)<-[:of_subject]-(exp:exposure)
+      MATCH (sub)<-[:of_subject]-(tt:targeted_therapy)
+ 
+      RETURN DISTINCT
+        'data file' AS type,
+        f.data_file_name AS data_file_name,
+        f.data_file_format AS data_file_format,
+        f.data_file_type AS data_file_type,
+        f.data_file_size AS data_file_size,
+        f.data_file_uuid AS data_file_uuid,
+        f.data_file_description AS data_file_description,
+      
+        spec.specimen_id AS specimen_id,
+        sub.subject_id AS subject_id,
+      
+        diag.ctep_disease_term AS ctep_disease_term,
+      
+        diag.stage_of_disease AS stage_of_disease,
+        diag.tumor_grade AS tumor_grade,
+        demo.sex AS sex,
+        demo.reported_gender AS reported_gender,
+        demo.race AS race,
+        demo.ethnicity AS ethnicity,
+      
+        COLLECT(DISTINCT(exp.carcinogen_exposure)) AS carcinogen_exposure,
+        COLLECT(DISTINCT(tt.targeted_therapy)) AS targeted_therapy,
+        
+        spec.anatomical_collection_site AS anatomical_collection_site,
+        spec.specimen_type AS specimen_type,
+        spec.tissue_category AS tissue_category,
+        spec.assessment_timepoint AS assessment_timepoint"
+    #lists for GS hashmap
+  - index_name: gs_list
+    type: neo4j
+    # type mapping for each property of the index
+    mapping:
+      autocomplete_list:
+        type: keyword
+    cypher_query: "
+      MATCH (spec:specimen)-[:of_subject]->(sub:subject)
+      optional MATCH (study:study)<-[:belongs_to]-(sub)
+      optional MATCH (sub)<-[:of_subject]-(diag:diagnosis)
+      WITH COLLECT(diag.stage_of_disease) as stage,COLLECT(diag.ctep_disease_term) as ctep,COLLECT(Distinct(sub.subject_id)) as subjectID,COLLECT(Distinct(spec.specimen_id)) as specimenID
+      WITH stage,ctep, stage + ctep + subjectID + specimenID as list
+      UNWIND list as autocomplete_list
+      RETURN distinct
+      
+      autocomplete_list
+      "
+  - index_name: therapy_count
+    type: neo4j
+    # type mapping for each property of the index
+    mapping:
+      targeted_therapy:
+        type: keyword
+    cypher_query: "
+      MATCH (study:study)<-[:belongs_to]-(sb:subject)
+      optional MATCH (sb)<-[:of_subject]-(tt:targeted_therapy) 
+      WHERE tt is not null
+      with tt
+      WHERE tt.targeted_therapy <> ''
+
+      RETURN 
+      tt.targeted_therapy as targeted_therapy
+      "
+  - index_name: about_page
+    type: about_file
+    # type mapping for each property of the index
+    mapping:
+      page:
+        type: keyword
+      title:
+        type: keyword
+      primaryContentImage:
+        type: text
+      content:
+        type: object
+    
+
+  - index_name: model_nodes
+    type: model
+    subtype: node
+    # type mapping for each property of the index
+    mapping:
+      node:
+        type: keyword
+      node_kw:
+        type: keyword
+  #Handles information stored in model file
+
+  - index_name: model_properties
+    type: model
+    subtype: property
+    # type mapping for each property of the index
+    mapping:
+      node:
+        type: keyword
+      property:
+        type: keyword
+      property_kw:
+        type: keyword
+      property_description:
+        type: keyword
+      property_required:
+        type: keyword
+      property_type:
+        type: keyword
+  #Handles information stored in model file
+
+  - index_name: model_values
+    type: model
+    subtype: value_kw
+    # type mapping for each property of the index
+    mapping:
+      no
+        type: keyword
+      property:
+        type: keyword
+      property_description:
+        type: keyword
+      property_required:
+        type: keyword
+      property_type:
+        type: keyword
+      value_kw:
+        type: keyword
+  
+
+ 

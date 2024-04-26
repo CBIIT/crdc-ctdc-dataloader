@@ -1,0 +1,48 @@
+Config:
+  temp_folder: tmp
+  backup_folder: /tmp/data-loader-backups
+  neo4j:
+   # Location of Neo4j server, e.g., bolt://127.0.0.1:7687
+    uri: neo4j://ncidb-d474-c
+
+    # uri: neo4j://ncidb-q475-c:7687
+    # uri: bolt://localhost:7687
+    user: neo4j
+    # Neo4j password
+  # Schema files' locations
+  schema:
+    - /Users/davenportaw/Downloads/cmb-data/ctdc_model_file.yml
+    - /Users/davenportaw/Downloads/cmb-data/ctdc_model_properties_file.yml
+
+  plugins:
+    # - module: loader_plugins.visit_creator
+    #   class: VisitCreator
+    # - module: loader_plugins.individual_creator
+    #   class: IndividualCreator
+
+  #Property file location
+  prop_file: /Users/davenportaw/Downloads/cmb-data/props-ctdc-cmb.yml
+
+  # Skip validations, aka. Cheat Mode
+  cheat_mode: false
+  # Validations only, skip loading
+  dry_run: false
+  # Wipe out database before loading, you'll lose all data!
+  wipe_db: true
+  # Skip backup step
+  no_backup: true
+  # Automatically confirm deletion and database wiping (without asking user to confirm)
+  no_confirmation: false
+  # Max violations to display, default is 10
+  max_violations: 10
+  # Split transactions
+  split-transactions: true
+
+  # S3 bucket name, if you are loading from an S3 bucket
+  s3_bucket:
+  # S3 folder for dataset
+  s3_folder:
+  # Loading mode, can be UPSERT_MODE, NEW_MODE or DELETE_MODE, default is UPSERT_MODE
+  loading_mode:
+  # Location of dataset
+  dataset:

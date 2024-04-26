@@ -1,0 +1,125 @@
+type	subject.subject_id	subject_status_id	survival_status	primary_cause_of_death	off_study	off_study_reason
+subject_status	MSB-09348	CTDC-SUBJECT-STATUS-676749	Dead	salus_in_arduis	Yes	NEVER DOSED
+subject_status	MSB-05388	CTDC-SUBJECT-STATUS-401327	UNKNOWN	"scientia,_aere_perennius"	Unknown	COMPLETED
+subject_status	MSB-07917	CTDC-SUBJECT-STATUS-735613	Alive with No Evidence of Disease	id_quod_plerumque_accidit	Unknown	WITHDRAWAL BY SUBJECT
+subject_status	MSB-05746	CTDC-SUBJECT-STATUS-214398	ALIVE	faber_est_suae_quisque_fortunae	No	PROTOCOL-SPECIFIED WITHDRAWAL CRITERION MET
+subject_status	MSB-01771	CTDC-SUBJECT-STATUS-554171	DEAD	sapiens_qui_prospicit	Unknown	WITHDRAWAL OF CONSENT
+subject_status	MSB-06699	CTDC-SUBJECT-STATUS-270377	Alive with No Evidence of Disease	barba_crescit_caput_nescit	Unknown	PROTOCOL-SPECIFIED WITHDRAWAL CRITERION MET
+subject_status	MSB-02472	CTDC-SUBJECT-STATUS-967206	DEAD	sapiens_qui_prospicit	No	NO LONGER CLINICALLY BENEFITING
+subject_status	MSB-03453	CTDC-SUBJECT-STATUS-380472	Dead	scientiae_cedit_mare	Yes	FAILURE TO MEET RANDOMIZATION CRITERIA
+subject_status	MSB-00643	CTDC-SUBJECT-STATUS-998013	ALIVE	damnant_quod_non_intellegunt	Unknown	WITHDRAWAL BY SUBJECT
+subject_status	MSB-05737	CTDC-SUBJECT-STATUS-933701	Alive with Disease	Gallia_est_omnis_divisa_in_partes_tres	Yes	PHYSICIAN DECISION
+subject_status	MSB-05975	CTDC-SUBJECT-STATUS-892395	"Alive, Disease Status Unknown"	faber_est_suae_quisque_fortunae	Unknown	WITHDRAWAL BY PARENT/GUARDIAN
+subject_status	MSB-03885	CTDC-SUBJECT-STATUS-604312	ALIVE	Macte_animo_Generose_puer_sic_itur_ad_astra	Yes	SITE TERMINATED BY SPONSOR
+subject_status	MSB-00556	CTDC-SUBJECT-STATUS-620281	"Alive, Disease Status Unknown"	Gallia_est_omnis_divisa_in_partes_tres	Unknown	OTHER
+subject_status	MSB-05742	CTDC-SUBJECT-STATUS-231177	"Alive, Disease Status Unknown"	pace_tua	Yes	PARTNER PREGNANCY
+subject_status	MSB-08631	CTDC-SUBJECT-STATUS-787128	ALIVE	nanos_gigantum_humeris_insidentes	No	LOGISTICAL PROBLEM
+subject_status	MSB-01224	CTDC-SUBJECT-STATUS-974914	Alive with No Evidence of Disease	O_Tite_tute_Tati_tibi_tanta_tyranne_tulisti	Yes	SPONSOR REQUEST
+subject_status	MSB-03315	CTDC-SUBJECT-STATUS-433278	Alive with Disease	scientiae_cedit_mare	Yes	WITHDRAWAL BY PARENT/GUARDIAN
+subject_status	MSB-08093	CTDC-SUBJECT-STATUS-859607	"Alive, Disease Status Unknown"	scientiae_et_patriae	No	DEATH
+subject_status	MSB-01723	CTDC-SUBJECT-STATUS-519796	UNKNOWN	scientia_et_sapientia	Unknown	ADVERSE EVENT
+subject_status	MSB-02271	CTDC-SUBJECT-STATUS-881464	UNKNOWN	haec_olim_meminisse_iuvabit	No	SPONSOR REQUEST
+subject_status	MSB-09619	CTDC-SUBJECT-STATUS-887839	"Alive, Disease Status Unknown"	scientia_et_labor	Unknown	WITHDRAWAL OF CONSENT
+subject_status	MSB-08045	CTDC-SUBJECT-STATUS-631568	DEAD	labor_ipse_voluptas	No	PROTOCOL-SPECIFIED WITHDRAWAL CRITERION MET
+subject_status	MSB-03406	CTDC-SUBJECT-STATUS-960305	Dead	haec_olim_meminisse_iuvabit	Yes	LACK OF EFFICACY
+subject_status	MSB-05387	CTDC-SUBJECT-STATUS-501643	Dead	damnant_quod_non_intellegunt	Yes	LACK OF EFFICACY
+subject_status	MSB-03932	CTDC-SUBJECT-STATUS-606053	ALIVE	scientiae_et_patriae	Yes	SITE TERMINATED BY SPONSOR
+subject_status	MSB-04031	CTDC-SUBJECT-STATUS-482459	UNKNOWN	labor_ipse_voluptas	Yes	PROTOCOL VIOLATION
+subject_status	MSB-07848	CTDC-SUBJECT-STATUS-698881	ALIVE	saltus_in_demonstrando	Unknown	ADVERSE EVENT
+subject_status	MSB-01617	CTDC-SUBJECT-STATUS-194797	"Alive, Disease Status Unknown"	a_bene_placito	Unknown	PROTOCOL VIOLATION
+subject_status	MSB-09991	CTDC-SUBJECT-STATUS-322452	ALIVE	nanos_gigantum_humeris_insidentes	No	WITHDRAWAL OF ASSENT
+subject_status	MSB-05281	CTDC-SUBJECT-STATUS-945749	DEAD	faber_est_suae_quisque_fortunae	Unknown	DISEASE RELAPSE
+subject_status	MSB-00352	CTDC-SUBJECT-STATUS-510598	"Alive, Disease Status Unknown"	a_bene_placito	Unknown	RECOVERY
+subject_status	MSB-06426	CTDC-SUBJECT-STATUS-758296	Dead	Gallia_est_omnis_divisa_in_partes_tres	No	COMPLETED
+subject_status	MSB-05206	CTDC-SUBJECT-STATUS-420638	ALIVE	scientia_et_sapientia	Unknown	STUDY TERMINATED BY SPONSOR
+subject_status	MSB-06029	CTDC-SUBJECT-STATUS-603719	ALIVE	O_Tite_tute_Tati_tibi_tanta_tyranne_tulisti	No	REQUIRES PROHIBITED MEDICATION
+subject_status	MSB-03226	CTDC-SUBJECT-STATUS-286537	ALIVE	scientiae_et_patriae	Yes	OTHER
+subject_status	MSB-00939	CTDC-SUBJECT-STATUS-424121	ALIVE	sapiens_qui_prospicit	No	STUDY TERMINATED BY SPONSOR
+subject_status	MSB-04432	CTDC-SUBJECT-STATUS-881821	Dead	Obedientia_civium_urbis_felicitas	No	PROTOCOL-SPECIFIED WITHDRAWAL CRITERION MET
+subject_status	MSB-01627	CTDC-SUBJECT-STATUS-786631	"Alive, Disease Status Unknown"	damnant_quod_non_intellegunt	Yes	WITHDRAWAL BY SUBJECT
+subject_status	MSB-01413	CTDC-SUBJECT-STATUS-356339	Alive with Disease	scientia_imperii_decus_et_tutamen	Yes	ADVERSE EVENT
+subject_status	MSB-03548	CTDC-SUBJECT-STATUS-346285	UNKNOWN	Macte_animo_Generose_puer_sic_itur_ad_astra	Unknown	FAILURE TO MEET CONTINUATION CRITERIA
+subject_status	MSB-06226	CTDC-SUBJECT-STATUS-286882	UNKNOWN	nascentes_morimur_finisque_ab_origine_pendet	No	TECHNICAL PROBLEMS
+subject_status	MSB-04153	CTDC-SUBJECT-STATUS-300501	ALIVE	saltus_in_demonstrando	Unknown	SCREEN FAILURE
+subject_status	MSB-01649	CTDC-SUBJECT-STATUS-310192	"Alive, Disease Status Unknown"	nascentes_morimur_finisque_ab_origine_pendet	No	APPROVED DRUG AVAILABLE FOR INDICATION
+subject_status	MSB-05562	CTDC-SUBJECT-STATUS-802383	Alive with No Evidence of Disease	labor_ipse_voluptas	Unknown	OTHER
+subject_status	MSB-06236	CTDC-SUBJECT-STATUS-340674	Alive with Disease	barba_crescit_caput_nescit	No	OTHER
+subject_status	MSB-06735	CTDC-SUBJECT-STATUS-264345	Alive with Disease	scientiae_cedit_mare	Yes	COMPLETED
+subject_status	MSB-03400	CTDC-SUBJECT-STATUS-497523	Dead	nascentes_morimur_finisque_ab_origine_pendet	No	SPONSOR REQUEST
+subject_status	MSB-01363	CTDC-SUBJECT-STATUS-780613	ALIVE	scientiae_et_patriae	Yes	WITHDRAWAL BY SUBJECT
+subject_status	MSB-09774	CTDC-SUBJECT-STATUS-565627	ALIVE	a_bene_placito	No	FAILURE TO MEET RANDOMIZATION CRITERIA
+subject_status	MSB-03796	CTDC-SUBJECT-STATUS-725762	Alive with Disease	scientiae_cedit_mare	Unknown	PARTNER PREGNANCY
+subject_status	MSB-04847	CTDC-SUBJECT-STATUS-705092	UNKNOWN	imperium_in_imperio	Unknown	NON-COMPLIANCE WITH STUDY DRUG
+subject_status	MSB-08142	CTDC-SUBJECT-STATUS-552644	"Alive, Disease Status Unknown"	nanos_gigantum_humeris_insidentes	No	PARTNER PREGNANCY
+subject_status	MSB-03272	CTDC-SUBJECT-STATUS-645477	Alive with No Evidence of Disease	saltus_in_demonstrando	Yes	PREGNANCY
+subject_status	MSB-04315	CTDC-SUBJECT-STATUS-634469	UNKNOWN	cacatum_non_est_pictum	Unknown	ADVERSE EVENT
+subject_status	MSB-01031	CTDC-SUBJECT-STATUS-506550	Dead	a_bene_placito	Unknown	SPONSOR REQUEST
+subject_status	MSB-09886	CTDC-SUBJECT-STATUS-344257	UNKNOWN	Obedientia_civium_urbis_felicitas	Unknown	DISEASE RELAPSE
+subject_status	MSB-07099	CTDC-SUBJECT-STATUS-144752	ALIVE	sapiens_qui_prospicit	Unknown	LACK OF EFFICACY
+subject_status	MSB-02746	CTDC-SUBJECT-STATUS-932389	"Alive, Disease Status Unknown"	Obedientia_civium_urbis_felicitas	Yes	RANDOMIZED BY MISTAKE WITH STUDY TREATMENT
+subject_status	MSB-05789	CTDC-SUBJECT-STATUS-496794	Dead	barba_crescit_caput_nescit	Yes	LACK OF EFFICACY
+subject_status	MSB-04950	CTDC-SUBJECT-STATUS-899043	UNKNOWN	salus_in_arduis	Yes	MET ELIGIBILITY CRITERIA BUT NOT NEEDED
+subject_status	MSB-05563	CTDC-SUBJECT-STATUS-925907	Alive with No Evidence of Disease	O_Tite_tute_Tati_tibi_tanta_tyranne_tulisti	Yes	LOGISTICAL PROBLEM
+subject_status	MSB-09601	CTDC-SUBJECT-STATUS-718475	Alive with No Evidence of Disease	"scientia,_aere_perennius"	Yes	PROTOCOL DEVIATION
+subject_status	MSB-07059	CTDC-SUBJECT-STATUS-617597	ALIVE	faber_est_suae_quisque_fortunae	Unknown	APPROVED DRUG AVAILABLE FOR INDICATION
+subject_status	MSB-06184	CTDC-SUBJECT-STATUS-784555	Alive with Disease	faber_est_suae_quisque_fortunae	Yes	PROTOCOL VIOLATION
+subject_status	MSB-08536	CTDC-SUBJECT-STATUS-738128	Alive with Disease	faber_est_suae_quisque_fortunae	Unknown	PROGRESSIVE DISEASE
+subject_status	MSB-06489	CTDC-SUBJECT-STATUS-624056	ALIVE	e_causa_ignota	Unknown	SCREENING NOT COMPLETED
+subject_status	MSB-07225	CTDC-SUBJECT-STATUS-157440	Alive with No Evidence of Disease	nanos_gigantum_humeris_insidentes	Yes	NON-COMPLIANCE WITH STUDY DRUG
+subject_status	MSB-08922	CTDC-SUBJECT-STATUS-521724	Dead	faber_est_suae_quisque_fortunae	No	WITHDRAWAL BY SUBJECT
+subject_status	MSB-04332	CTDC-SUBJECT-STATUS-436064	UNKNOWN	sapiens_qui_prospicit	Unknown	STUDY TERMINATED BY SPONSOR
+subject_status	MSB-01103	CTDC-SUBJECT-STATUS-933485	DEAD	id_quod_plerumque_accidit	No	TECHNICAL PROBLEMS
+subject_status	MSB-08178	CTDC-SUBJECT-STATUS-933657	Alive with No Evidence of Disease	nanos_gigantum_humeris_insidentes	Yes	SCREENING NOT COMPLETED
+subject_status	MSB-03244	CTDC-SUBJECT-STATUS-525882	"Alive, Disease Status Unknown"	a_bene_placito	Unknown	PROGRESSIVE DISEASE
+subject_status	MSB-02249	CTDC-SUBJECT-STATUS-415612	Alive with Disease	Macte_animo_Generose_puer_sic_itur_ad_astra	No	PROTOCOL DEVIATION
+subject_status	MSB-05040	CTDC-SUBJECT-STATUS-704279	ALIVE	barba_crescit_caput_nescit	Unknown	PHYSICIAN DECISION
+subject_status	MSB-07436	CTDC-SUBJECT-STATUS-324459	Alive with Disease	scientiae_et_patriae	No	WITHDRAWAL BY PARENT/GUARDIAN
+subject_status	MSB-00952	CTDC-SUBJECT-STATUS-665278	Dead	Obedientia_civium_urbis_felicitas	No	SITE TERMINATED BY SPONSOR
+subject_status	MSB-02917	CTDC-SUBJECT-STATUS-914660	Alive with No Evidence of Disease	Macte_animo_Generose_puer_sic_itur_ad_astra	Unknown	PROGRESSIVE DISEASE
+subject_status	MSB-03973	CTDC-SUBJECT-STATUS-142703	ALIVE	e_causa_ignota	Unknown	MET ELIGIBILITY CRITERIA BUT NOT NEEDED
+subject_status	MSB-02118	CTDC-SUBJECT-STATUS-977984	Dead	id_quod_plerumque_accidit	No	NON-COMPLIANCE WITH STUDY DRUG
+subject_status	MSB-06857	CTDC-SUBJECT-STATUS-492728	UNKNOWN	scientiae_et_patriae	No	RANDOMIZED BY MISTAKE WITHOUT STUDY TREATMENT
+subject_status	MSB-09117	CTDC-SUBJECT-STATUS-304909	Alive with Disease	scientiae_et_patriae	No	PROGRESSIVE DISEASE
+subject_status	MSB-03258	CTDC-SUBJECT-STATUS-683320	"Alive, Disease Status Unknown"	id_quod_plerumque_accidit	No	PROTOCOL-SPECIFIED WITHDRAWAL CRITERION MET
+subject_status	MSB-08267	CTDC-SUBJECT-STATUS-860535	Alive with No Evidence of Disease	saltus_in_demonstrando	No	NO LONGER CLINICALLY BENEFITING
+subject_status	MSB-03053	CTDC-SUBJECT-STATUS-994587	"Alive, Disease Status Unknown"	salus_in_arduis	Unknown	LOST TO FOLLOW-UP
+subject_status	MSB-05837	CTDC-SUBJECT-STATUS-465489	DEAD	scientiae_et_patriae	No	WITHDRAWAL BY PARENT/GUARDIAN
+subject_status	MSB-07483	CTDC-SUBJECT-STATUS-423706	"Alive, Disease Status Unknown"	cacatum_non_est_pictum	Yes	NON-COMPLIANCE WITH NON-STUDY DEVICE
+subject_status	MSB-07865	CTDC-SUBJECT-STATUS-487663	ALIVE	id_quod_plerumque_accidit	Unknown	NO LONGER CLINICALLY BENEFITING
+subject_status	MSB-01262	CTDC-SUBJECT-STATUS-197023	UNKNOWN	e_causa_ignota	No	MET ELIGIBILITY CRITERIA BUT NOT NEEDED
+subject_status	MSB-07994	CTDC-SUBJECT-STATUS-701239	ALIVE	Macte_animo_Generose_puer_sic_itur_ad_astra	No	DISEASE RELAPSE
+subject_status	MSB-04030	CTDC-SUBJECT-STATUS-841234	"Alive, Disease Status Unknown"	Macte_animo_Generose_puer_sic_itur_ad_astra	Yes	NEVER DOSED
+subject_status	MSB-09977	CTDC-SUBJECT-STATUS-935187	ALIVE	labor_ipse_voluptas	No	PHYSICIAN DECISION
+subject_status	MSB-07612	CTDC-SUBJECT-STATUS-372578	UNKNOWN	haec_olim_meminisse_iuvabit	Yes	APPROVED DRUG AVAILABLE FOR INDICATION
+subject_status	MSB-00205	CTDC-SUBJECT-STATUS-645657	Alive with No Evidence of Disease	pace_tua	Unknown	PROTOCOL DEVIATION
+subject_status	MSB-05508	CTDC-SUBJECT-STATUS-785174	Alive with No Evidence of Disease	Macte_animo_Generose_puer_sic_itur_ad_astra	Unknown	PHYSICIAN DECISION
+subject_status	MSB-02286	CTDC-SUBJECT-STATUS-325171	UNKNOWN	Gallia_est_omnis_divisa_in_partes_tres	Unknown	REQUIRES PROHIBITED MEDICATION
+subject_status	MSB-08170	CTDC-SUBJECT-STATUS-951146	"Alive, Disease Status Unknown"	saltus_in_demonstrando	Unknown	SCREEN FAILURE
+subject_status	MSB-09495	CTDC-SUBJECT-STATUS-999367	DEAD	scientiae_cedit_mare	No	SCREENING NOT COMPLETED
+subject_status	MSB-09286	CTDC-SUBJECT-STATUS-856187	DEAD	Gallia_est_omnis_divisa_in_partes_tres	Yes	REQUIRES PROHIBITED MEDICATION
+subject_status	MSB-00263	CTDC-SUBJECT-STATUS-737555	DEAD	damnant_quod_non_intellegunt	No	WITHDRAWAL OF CONSENT
+subject_status	MSB-05412	CTDC-SUBJECT-STATUS-744454	Alive with Disease	scientia_et_sapientia	Unknown	SCREEN FAILURE
+subject_status	MSB-04831	CTDC-SUBJECT-STATUS-118549	Alive with No Evidence of Disease	scientia_et_labor	Unknown	TECHNICAL PROBLEMS
+subject_status	MSB-09737	CTDC-SUBJECT-STATUS-924755	Alive with Disease	Macte_animo_Generose_puer_sic_itur_ad_astra	Unknown	OTHER
+subject_status	MSB-09151	CTDC-SUBJECT-STATUS-766913	UNKNOWN	e_causa_ignota	Yes	PROTOCOL DEVIATION
+subject_status	MSB-05283	CTDC-SUBJECT-STATUS-584283	Alive with Disease	cacatum_non_est_pictum	No	FAILURE TO MEET CONTINUATION CRITERIA
+subject_status	MSB-01849	CTDC-SUBJECT-STATUS-654972	UNKNOWN	barba_crescit_caput_nescit	No	NEVER DOSED
+subject_status	MSB-07473	CTDC-SUBJECT-STATUS-583254	ALIVE	nanos_gigantum_humeris_insidentes	Unknown	NON-COMPLIANCE WITH NON-STUDY DEVICE
+subject_status	MSB-08588	CTDC-SUBJECT-STATUS-152487	Alive with Disease	Macte_animo_Generose_puer_sic_itur_ad_astra	Unknown	PHYSICIAN DECISION
+subject_status	MSB-09027	CTDC-SUBJECT-STATUS-303366	"Alive, Disease Status Unknown"	scientia_imperii_decus_et_tutamen	Yes	OTHER
+subject_status	MSB-03808	CTDC-SUBJECT-STATUS-589695	Alive with No Evidence of Disease	id_quod_plerumque_accidit	Yes	TECHNICAL PROBLEMS
+subject_status	MSB-01459	CTDC-SUBJECT-STATUS-510506	Alive with No Evidence of Disease	Gallia_est_omnis_divisa_in_partes_tres	Yes	COMPLETED
+subject_status	MSB-03032	CTDC-SUBJECT-STATUS-493213	ALIVE	scientia_et_sapientia	No	RANDOMIZED BY MISTAKE
+subject_status	MSB-03725	CTDC-SUBJECT-STATUS-233779	UNKNOWN	haec_olim_meminisse_iuvabit	Unknown	NO LONGER CLINICALLY BENEFITING
+subject_status	MSB-02381	CTDC-SUBJECT-STATUS-818314	Alive with No Evidence of Disease	nascentes_morimur_finisque_ab_origine_pendet	Yes	LOGISTICAL PROBLEM
+subject_status	MSB-01206	CTDC-SUBJECT-STATUS-487255	Alive with No Evidence of Disease	O_Tite_tute_Tati_tibi_tanta_tyranne_tulisti	Unknown	SPONSOR REQUEST
+subject_status	MSB-09019	CTDC-SUBJECT-STATUS-551340	DEAD	nanos_gigantum_humeris_insidentes	No	SCREENING NOT COMPLETED
+subject_status	MSB-01499	CTDC-SUBJECT-STATUS-852569	Dead	a_bene_placito	No	PROTOCOL VIOLATION
+subject_status	MSB-01652	CTDC-SUBJECT-STATUS-695234	Dead	scientia_et_labor	No	TECHNICAL PROBLEMS
+subject_status	MSB-06305	CTDC-SUBJECT-STATUS-711409	UNKNOWN	nanos_gigantum_humeris_insidentes	No	SCREENING NOT COMPLETED
+subject_status	MSB-09018	CTDC-SUBJECT-STATUS-604224	ALIVE	scientiae_cedit_mare	Yes	NEVER DOSED
+subject_status	MSB-09794	CTDC-SUBJECT-STATUS-475094	"Alive, Disease Status Unknown"	labor_ipse_voluptas	Unknown	NO LONGER CLINICALLY BENEFITING
+subject_status	MSB-04863	CTDC-SUBJECT-STATUS-624422	DEAD	sapiens_qui_prospicit	No	REQUIRES PROHIBITED MEDICATION
+subject_status	MSB-06720	CTDC-SUBJECT-STATUS-502635	ALIVE	scientia_et_labor	No	NO LONGER CLINICALLY BENEFITING
+subject_status	MSB-02291	CTDC-SUBJECT-STATUS-873285	DEAD	nascentes_morimur_finisque_ab_origine_pendet	Unknown	LOGISTICAL PROBLEM
+subject_status	MSB-01068	CTDC-SUBJECT-STATUS-722660	DEAD	nascentes_morimur_finisque_ab_origine_pendet	No	TECHNICAL PROBLEMS
