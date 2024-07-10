@@ -1,0 +1,16 @@
+Config:
+  # Neo4j URL with port number
+  # Neo4j user name, default is neo4j
+  es_host: localhost
+  
+  # Path to about file
+  about_file: /Users/davenportaw/Downloads/cmb-data/aboutPagesContent.yml
+
+  model_files:
+    - /Users/davenportaw/Downloads/cmb-data/ctdc_model_file.yaml
+    - /Users/davenportaw/Downloads/cmb-data/ctdc_model_properties_file.yaml
+
+  prop_file: /Users/davenportaw/Projects/CTDCdataloader/crdc-ctdc-dataloader/config/props-ctdc.yml
+  
+
+  #./loader.py /Users/davenportaw/Downloads/cmb-data/ctdc-local.yml --data /Users/davenportaw/Downloads/cmb-data/2024-2-5
