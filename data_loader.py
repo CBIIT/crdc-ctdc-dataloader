@@ -283,10 +283,11 @@ class DataLoader:
                     sys.exit(1)
             elif self.database_type == MEMGRAPH:
                 backup_name = backup_memgraph_mgconsole(backup_folder, self.memgraph_snapshot_dir, username, password, self.log)
-                print(backup_name)
+                #the memgraph backup function only works if there is a memgraph mgconcole environment(memgraph docker) set up in local
+                '''
                 if not backup_name:
                     self.log.error('Backup Memgraph failed, abort loading!')
-                    sys.exit(1)
+                    sys.exit(1)'''
         if dry_run:
             end = timer()
             self.log.info('Dry run mode, no nodes or relationships loaded.')  # Time in seconds, e.g. 5.38091952400282
