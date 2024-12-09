@@ -245,7 +245,7 @@ class DataLoader:
                     timestamp = get_time_stamp()
                     output_key_invalid = os.path.join(temp_folder, df_validation_result_file_key) + "_" + timestamp + ".xlsx"
                     #df_validation_result.to_csv(output_key_invalid, index=False)
-                    writer=pd.ExcelWriter(output_key_invalid, engine='xlsxwriter', engine_kwargs={'options':{'strings_to_urls': False}})
+                    writer=pd.ExcelWriter(output_key_invalid, engine='xlsxwriter')
                     for key in self.df_validation_dict.keys():
                         sheet_name_new = key
                         self.df_validation_dict[key].to_excel(writer,sheet_name=sheet_name_new, index=False)
@@ -974,56 +974,60 @@ class DataLoader:
         #print(obj.items())
         for key, value in obj.items():
             if is_parent_pointer(key):
-                provided_parents += 1
-                other_node, other_id = key.split('.')
-                relationship = self.schema.get_relationship(node_type, other_node)
-                if not isinstance(relationship, dict):
-                    self.log.error('Line: {}: Relationship not found!'.format(line_num))
-                    raise Exception('Undefined relationship, abort loading!')
-                relationship_name = relationship[RELATIONSHIP_TYPE]
-                multiplier = relationship[MULTIPLIER]
-                if not relationship_name:
-                    self.log.error('Line: {}: Relationship not found!'.format(line_num))
-                    raise Exception('Undefined relationship, abort loading!')
-                if not self.node_exists(session, other_node, other_id, value):
-                    create_parent = False
-                    if create_intermediate_node:
-                        for plugin in self.plugins:
-                            if plugin.should_run(other_node, MISSING_PARENT):
-                                create_parent = True
-                                if plugin.create_node(session, line_num, other_node, value, obj):
-                                    int_node_created += 1
-                                    relationships.append(
-                                        {PARENT_TYPE: other_node, PARENT_ID_FIELD: other_id, PARENT_ID: value,
-                                         RELATIONSHIP_TYPE: relationship_name, MULTIPLIER: multiplier})
-                                else:
-                                    self.log.error(
-                                        'Line: {}: Could not create {} node automatically!'.format(line_num,
-                                                                                                   other_node))
+                parent_value_list = self.schema.get_list_values(value)
+                for value in parent_value_list:
+                    provided_parents += 1
+                    other_node, other_id = key.split('.')
+                    relationship = self.schema.get_relationship(node_type, other_node)
+                    if not isinstance(relationship, dict):
+                        self.log.error('Line: {}: Relationship not found!'.format(line_num))
+                        raise Exception('Undefined relationship, abort loading!')
+                    relationship_name = relationship[RELATIONSHIP_TYPE]
+                    multiplier = relationship[MULTIPLIER]
+                    if not relationship_name:
+                        self.log.error('Line: {}: Relationship not found!'.format(line_num))
+                        raise Exception('Undefined relationship, abort loading!')
+                    if not self.node_exists(session, other_node, other_id, value):
+                        create_parent = False
+                        if create_intermediate_node:
+                            for plugin in self.plugins:
+                                if plugin.should_run(other_node, MISSING_PARENT):
+                                    create_parent = True
+                                    if plugin.create_node(session, line_num, other_node, value, obj):
+                                        int_node_created += 1
+                                        relationships.append(
+                                            {PARENT_TYPE: other_node, PARENT_ID_FIELD: other_id, PARENT_ID: value,
+                                            RELATIONSHIP_TYPE: relationship_name, MULTIPLIER: multiplier})
+                                    else:
+                                        self.log.error(
+                                            'Line: {}: Could not create {} node automatically!'.format(line_num,
+                                                                                                    other_node))
+                        else:
+                            self.log.warning(
+                                'Line: {}: Parent node (:{} {{{}: "{}"}} not found in DB!'.format(line_num, other_node,
+                                                                                                other_id,
+                                                                                                value))
+                        if not create_parent:
+                            self.log.warning(
+                                'Line: {}: Parent node (:{} {{{}: "{}"}} not found in DB!'.format(line_num, other_node,
+                                                                                                other_id,
+                                                                                                value))
                     else:
-                        self.log.warning(
-                            'Line: {}: Parent node (:{} {{{}: "{}"}} not found in DB!'.format(line_num, other_node,
-                                                                                              other_id,
-                                                                                              value))
-                    if not create_parent:
-                        self.log.warning(
-                            'Line: {}: Parent node (:{} {{{}: "{}"}} not found in DB!'.format(line_num, other_node,
-                                                                                              other_id,
-                                                                                              value))
-                else:
-                    if multiplier == ONE_TO_ONE and self.parent_already_has_child(session, node_type, obj,
-                                                                                  relationship_name, other_node,
-                                                                                  other_id, value):
-                        self.log.error(
-                            'Line: {}: one_to_one relationship failed, parent already has a child!'.format(line_num))
-                    else:
-                        relationships.append({PARENT_TYPE: other_node, PARENT_ID_FIELD: other_id, PARENT_ID: value,
-                                              RELATIONSHIP_TYPE: relationship_name, MULTIPLIER: multiplier})
+                        if multiplier == ONE_TO_ONE and self.parent_already_has_child(session, node_type, obj,
+                                                                                    relationship_name, other_node,
+                                                                                    other_id, value):
+                            self.log.error(
+                                'Line: {}: one_to_one relationship failed, parent already has a child!'.format(line_num))
+                        else:
+                            relationships.append({PARENT_TYPE: other_node, PARENT_ID_FIELD: other_id, PARENT_ID: value,
+                                                RELATIONSHIP_TYPE: relationship_name, MULTIPLIER: multiplier})
             elif self.schema.is_relationship_property(key):
-                rel_name, prop_name = key.split(self.rel_prop_delimiter)
-                if rel_name not in relationship_properties:
-                    relationship_properties[rel_name] = {}
-                relationship_properties[rel_name][prop_name] = value
+                parent_value_list = self.schema.get_list_values(value)
+                for value in parent_value_list:
+                    rel_name, prop_name = key.split(self.rel_prop_delimiter)
+                    if rel_name not in relationship_properties:
+                        relationship_properties[rel_name] = {}
+                    relationship_properties[rel_name][prop_name] = value
         return {RELATIONSHIPS: relationships, INT_NODE_CREATED: int_node_created, PROVIDED_PARENTS: provided_parents,
                 RELATIONSHIP_PROPS: relationship_properties}
 
