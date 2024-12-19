@@ -103,7 +103,7 @@ class ICDC_Schema:
                 elif len(node_id_list) > 1:
                     raise Exception("More than one key property found for the same node")
         if len(id_fields) > 0:
-            self.props.id_fields = id_fields
+            self.props.id_fields.update(id_fields)
             
 
     def get_node_id(self, node_type):
