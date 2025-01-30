@@ -243,8 +243,16 @@ def main():
         load_model = True
 
     summary = {}
+    indices_list = config.get('indices_list')
+    if indices_list is not None:
+        logger.warning(f"An indices list is provided, only the indices in the indices list {indices_list} will be loaded")
+    index_name_list = []
     for index in indices:
         index_name = index.get('index_name')
+        index_name_list.append(index_name)
+        if indices_list is not None and index_name is not None:
+            if index_name not in indices_list:
+                continue
         summary[index_name] = "ERROR!"
         logger.info(f'Begin loading index: "{index_name}"')
         if 'type' not in index or index['type'] == 'neo4j':
@@ -273,6 +281,10 @@ def main():
                     f'"model_files" not set in configuration file, {index_name} will not be loaded!')
         else:
             logger.error(f'Unknown index type: "{index["type"]}"')
+    if indices_list is not None:
+        for indices_name in indices_list:
+            if indices_name not in index_name_list:
+                logger.warning(f'The index {indices_name} in the indices list does not exist in the definition file')
     logger.info(f'Index loading summary:')
     for index in summary.keys():
         logger.info(f'{index}: {summary[index]}')
