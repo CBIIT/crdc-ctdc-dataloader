@@ -245,7 +245,7 @@ def main():
     summary = {}
     indices_list = config.get('indices_list')
     if indices_list is not None:
-        logger.warning(f"The indices list is provided, only the indice in the indice list {indices_list} will be loaded")
+        logger.warning(f"An indices list is provided, only the indices in the indices list {indices_list} will be loaded")
     index_name_list = []
     for index in indices:
         index_name = index.get('index_name')
@@ -284,7 +284,7 @@ def main():
     if indices_list is not None:
         for indices_name in indices_list:
             if indices_name not in index_name_list:
-                logger.warning(f'the indice {indices_name} in the indices list does not exist in the definition file')
+                logger.warning(f'The index {indices_name} in the indices list does not exist in the definition file')
     logger.info(f'Index loading summary:')
     for index in summary.keys():
         logger.info(f'{index}: {summary[index]}')
