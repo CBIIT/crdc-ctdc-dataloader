@@ -245,13 +245,15 @@ def main():
     summary = {}
     indices_list = config.get('indices_list')
     if indices_list is not None:
+        lower_indices_list = [item.lower() for item in indices_list]
         logger.warning(f"An indices list is provided, only the indices in the indices list {indices_list} will be loaded")
     index_name_list = []
     for index in indices:
         index_name = index.get('index_name')
-        index_name_list.append(index_name)
+        index_name_list.append(index_name.lower())
         if indices_list is not None and index_name is not None:
-            if index_name not in indices_list:
+            lower_index_name = index_name.lower()
+            if lower_index_name not in lower_indices_list:
                 continue
         summary[index_name] = "ERROR!"
         logger.info(f'Begin loading index: "{index_name}"')
@@ -283,7 +285,7 @@ def main():
             logger.error(f'Unknown index type: "{index["type"]}"')
     if indices_list is not None:
         for indices_name in indices_list:
-            if indices_name not in index_name_list:
+            if indices_name.lower() not in index_name_list:
                 logger.warning(f'The index {indices_name} in the indices list does not exist in the definition file')
     logger.info(f'Index loading summary:')
     for index in summary.keys():
