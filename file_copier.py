@@ -196,7 +196,7 @@ class FileLoader:
         split_filename = file_name.lower().split(".")
         if len(split_filename) < 2:
             return None
-        if split_filename[-1] in ("gz", "zip", "7z", "bz2", "xz", "rar"):
+        if split_filename[-1] in ("gz", "zip", "7z", "bz2", "xz", "rar") and len(split_filename) > 2:
             return split_filename[-2]
         return split_filename[-1]
 
