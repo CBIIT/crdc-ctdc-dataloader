@@ -1,0 +1,2 @@
+dev:
+  neo4j_secret: "ctdc_memgraph_secret_name_dev"
