@@ -27,7 +27,7 @@ pull:
       branch: master
   - prefect.deployments.steps.git_clone:
       repository: https://github.com/CBIIT/crdc-ctdc-backend.git
-      branch: 1.1.0
+      branch: 1.1.0-memgraph
       include_submodules: True
   - prefect.deployments.steps.git_clone:
       repository: https://github.com/CBIIT/crdc-ctdc-ui.git
