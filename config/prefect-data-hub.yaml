@@ -16,8 +16,8 @@ push: null
 pull:
   - prefect.deployments.steps.git_clone:
       #id: clone-step
-      repository: https://github.com/CBIIT/icdc-dataloader.git
-      branch: 3.2.0_delete_command
+      repository: https://github.com/CBIIT/ctdc-dataloader.git
+      branch: prefect_loader
       include_submodules: True
   - prefect.deployments.steps.git_clone:
       repository: https://github.com/CBIIT/ctdc-model.git
@@ -26,12 +26,12 @@ pull:
       repository: https://github.com/CBIIT/icdc-model-tool.git
       branch: master
   - prefect.deployments.steps.git_clone:
-      repository: https://github.com/CBIIT/bento-cds-backend.git
-      branch: 3.1.0_less_page
+      repository: https://github.com/CBIIT/crdc-ctdc-backend.git
+      branch: 1.1.0
       include_submodules: True
   - prefect.deployments.steps.git_clone:
-      repository: https://github.com/CBIIT/bento-cds-frontend.git
-      branch: 4.6.0
+      repository: https://github.com/CBIIT/crdc-ctdc-ui.git
+      branch: 1.1.0
       include_submodules: True
   - prefect.deployments.steps.set_working_directory:
       directory: "/opt/prefect/icdc-dataloader"
@@ -51,9 +51,9 @@ deployments:
     entrypoint: es_loader_prefect.py:es_loader_prefect
     parameters:
       environment: "dev"
-      about_file: "../bento-cds-frontend/src/content/prod/aboutPagesContent.yaml"
+      about_file: "../crdc-ctdc-ui/src/content/prod/aboutPagesContent.yaml"
       indices_list: []
-      indices_file: "../bento-cds-backend/src/main/resources/yaml/es_indices_cds.yml"
+      indices_file: "../crdc-ctdc-backend/src/main/resources/yaml/es_indices_ctdc.yml"
       model_files:
         - ../ctdc-model/model-desc/ctdc_model_file.yaml
         - ../ctdc-model/model-desc/ctdc_model_properties_file.yaml
