@@ -1,7 +1,7 @@
 # from es_loader import ESLoader, _validate_cypher_queries
 from prefect import flow
 from typing import Literal
-from bento.common.secret_manager import get_secret
+# from bento.common.secret_manager import get_secret
 from bento.common.utils import get_logger, print_config, LOG_PREFIX, APP_NAME
 import yaml
 import os
