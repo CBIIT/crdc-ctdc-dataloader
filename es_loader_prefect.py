@@ -14,10 +14,10 @@ MEMGRAPH_USER = "memgraph_user"
 MEMGRAPH_PASSWORD = "memgraph_password"
 ES_HOST = "es_host"
 
-# config_file = "config/prefect_drop_down_config_esloader.yaml"
-# with open(config_file, 'r') as file:
-#     config_drop_list = yaml.safe_load(file)
-# environment_choices = Literal[tuple(list(config_drop_list.keys()))]
+config_file = "config/prefect_drop_down_config_esloader.yaml"
+with open(config_file, 'r') as file:
+    config_drop_list = yaml.safe_load(file)
+environment_choices = Literal[tuple(list(config_drop_list.keys()))]
 
 @flow(name="CRDC Data Hub ESloader", log_prints=True)
 def es_loader_prefect(
@@ -28,9 +28,9 @@ def es_loader_prefect(
     indices_list,
     indices_file,
 ):  
-    with open(indices_file, 'r') as file:
-        indices_yaml = yaml.safe_load(file)
-    indices = indices_yaml['Indices']
+    # with open(indices_file, 'r') as file:
+    #     indices_yaml = yaml.safe_load(file)
+    # indices = indices_yaml['Indices']
 
     logger = get_logger('ESLoader')
     current_directory = os.getcwd()
