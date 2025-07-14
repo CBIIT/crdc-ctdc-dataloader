@@ -9,7 +9,7 @@ import prefect.variables as Variable
 from neo4j import GraphDatabase
 
 MEMGRAPH_SECRET = "neo4j_secret"
-MEMGRAPH_ENDPOINT = "memgraph_endpoint"
+MEMGRAPH_ENDPOINT = "memgraph_host"
 MEMGRAPH_USER = "memgraph_user"
 MEMGRAPH_PASSWORD = "memgraph_password"
 ES_HOST = "es_host"
