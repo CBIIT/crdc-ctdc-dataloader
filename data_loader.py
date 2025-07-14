@@ -11,9 +11,10 @@ import subprocess
 import json
 import pandas as pd
 import datetime
-import dateutil
 from timeit import default_timer as timer
 from bento.common.utils import get_host, DATETIME_FORMAT, reformat_date, get_time_stamp
+from memgraph_backup_restore import backup_memgraph_mgconsole
+from create_index import create_index, NEO4J, MEMGRAPH
 
 from neo4j import Driver
 
@@ -39,21 +40,16 @@ PROVIDED_PARENTS = 'provided_parents'
 RELATIONSHIP_PROPS = 'relationship_properties'
 BATCH_SIZE = 1000
 OTHER = '__other__'
-csv.field_size_limit(sys.maxsize)
 
-def get_btree_indexes(session):
-    """
-    Queries the database to get all existing indexes
-    :param session: the current neo4j transaction session
-    :return: A set of tuples representing all existing indexes in the database
-    """
-    command = "SHOW INDEXES"
-    result = session.run(command)
-    indexes = set()
-    for r in result:
-        if r["type"] == "BTREE":
-            indexes.add(format_as_tuple(r["labelsOrTypes"][0], r["properties"]))
-    return indexes
+maxInt = sys.maxsize
+while True:
+    # decrease the maxInt value by factor 10 
+    # as long as the OverflowError occurs.
+    try:
+        csv.field_size_limit(maxInt)
+        break
+    except OverflowError:
+        maxInt = int(maxInt/10)
 
 def format_as_tuple(node_name, properties):
     """
@@ -140,16 +136,20 @@ def get_props_signature(props):
 
 
 class DataLoader:
-    def __init__(self, driver, schema, plugins=None):
+    def __init__(self, driver, schema, config=None, memgraph_snapshot_dir=None, plugins=None):
         if plugins is None:
             plugins = []
         if not schema or not isinstance(schema, ICDC_Schema):
             raise Exception('Invalid ICDC_Schema object')
         self.log = get_logger('Data Loader')
         self.driver = driver
+        self.database_type = NEO4J
+        if config is not None:
+            self.database_type = config.database_type
+
         self.schema = schema
         self.rel_prop_delimiter = self.schema.rel_prop_delimiter
-
+        self.memgraph_snapshot_dir = memgraph_snapshot_dir
         if plugins:
             for plugin in plugins:
                 if not hasattr(plugin, 'create_node'):
@@ -190,7 +190,7 @@ class DataLoader:
                     self.log.error('File "{}" does not exist'.format(data_file))
                     return False
             return True
-
+ 
     def validate_delete_files(self, file_list):
         validation_result = True
         try:
@@ -246,7 +246,7 @@ class DataLoader:
                     timestamp = get_time_stamp()
                     output_key_invalid = os.path.join(temp_folder, df_validation_result_file_key) + "_" + timestamp + ".xlsx"
                     #df_validation_result.to_csv(output_key_invalid, index=False)
-                    writer=pd.ExcelWriter(output_key_invalid, engine='xlsxwriter', engine_kwargs={'options':{'strings_to_urls': False}})
+                    writer=pd.ExcelWriter(output_key_invalid, engine='xlsxwriter')
                     for key in self.df_validation_dict.keys():
                         sheet_name_new = key
                         self.df_validation_dict[key].to_excel(writer,sheet_name=sheet_name_new, index=False)
@@ -265,7 +265,7 @@ class DataLoader:
             return True
 
     def load(self, file_list, cheat_mode, dry_run, loading_mode, wipe_db, max_violations, temp_folder, verbose,
-             split=False, no_backup=True, backup_folder="/", neo4j_uri=None):
+             split=False, no_backup=True, neo4j_uri=None, backup_folder="/", username=None, password=None):
         if not self.check_files(file_list):
             return False
         start = timer()
@@ -275,12 +275,19 @@ class DataLoader:
             if not neo4j_uri:
                 self.log.error('No Neo4j URI specified for backup, abort loading!')
                 sys.exit(1)
-            backup_name = datetime.datetime.today().strftime(DATETIME_FORMAT)
             host = get_host(neo4j_uri)
-            restore_cmd = backup_neo4j(backup_folder, backup_name, host, self.log)
-            if not restore_cmd:
-                self.log.error('Backup Neo4j failed, abort loading!')
-                sys.exit(1)
+            if self.database_type == NEO4J:
+                backup_name = datetime.datetime.today().strftime(DATETIME_FORMAT)
+                restore_cmd = backup_neo4j(backup_folder, backup_name, host, self.log)
+                if not restore_cmd:
+                    self.log.error('Backup Neo4j failed, abort loading!')
+                    sys.exit(1)
+            elif self.database_type == MEMGRAPH:
+                backup_name = backup_memgraph_mgconsole(backup_folder, self.memgraph_snapshot_dir, username, password, self.log)
+                #the memgraph backup function only works if there is a memgraph mgconcole environment(memgraph docker) set up in local
+                #if not backup_name:
+                #    self.log.error('Backup Memgraph failed, abort loading!')
+                #    sys.exit(1)
         if dry_run:
             end = timer()
             self.log.info('Dry run mode, no nodes or relationships loaded.')  # Time in seconds, e.g. 5.38091952400282
@@ -304,15 +311,11 @@ class DataLoader:
             return False
         # Data updates and schema related updates cannot be performed in the same session so multiple will be created
         # Create new session for schema related updates (index creation)
-        with self.driver.session() as session:
-            tx = session.begin_transaction()
-            try:
-                self.create_indexes(tx)
-                tx.commit()
-            except Exception as e:
-                tx.rollback()
-                self.log.exception(e)
-                return False
+        try:
+            self.indexes_created = create_index(self.driver, self.schema, self.log, self.database_type)
+        except Exception as e:
+            self.log.exception(e)
+            return False
         # Create new session for data related updates
         with self.driver.session() as session:
             # Split Transactions enabled
@@ -329,7 +332,8 @@ class DataLoader:
                 except Exception as e:
                     tx.rollback()
                     self.log.exception(e)
-                    return False
+                    #return False
+                    sys.exit(1)
 
         # End the timer
         end = timer()
@@ -836,7 +840,8 @@ class DataLoader:
     def get_children_with_single_parent(self, session, node):
         node_type = node[NODE_TYPE]
         statement = 'MATCH (n:{0} {{ {1}: ${1} }})<--(m)'.format(node_type, self.schema.get_id_field(node))
-        statement += ' WHERE NOT (n)<--(m)-->() RETURN m'
+        #statement += ' WHERE NOT (n)<--(m)-->() RETURN m'
+        statement += ' WHERE NOT EXISTS((n)<--(m)-->()) RETURN m'
         result = session.run(statement, node)
         children = []
         for obj in result:
@@ -923,7 +928,7 @@ class DataLoader:
                     count = result.consume().counters.nodes_created
                     #count the updated nodes
                     update_count = 0
-                    if result.consume().counters.nodes_created == 0 and result.consume().counters._contains_updates:
+                    if result.consume().counters.nodes_created == 0 and result.consume().counters.nodes_deleted == 0:
                         update_count = 1
                     self.nodes_created += count
                     self.nodes_updated += update_count
@@ -966,56 +971,60 @@ class DataLoader:
         #print(obj.items())
         for key, value in obj.items():
             if is_parent_pointer(key):
-                provided_parents += 1
-                other_node, other_id = key.split('.')
-                relationship = self.schema.get_relationship(node_type, other_node)
-                if not isinstance(relationship, dict):
-                    self.log.error('Line: {}: Relationship not found!'.format(line_num))
-                    raise Exception('Undefined relationship, abort loading!')
-                relationship_name = relationship[RELATIONSHIP_TYPE]
-                multiplier = relationship[MULTIPLIER]
-                if not relationship_name:
-                    self.log.error('Line: {}: Relationship not found!'.format(line_num))
-                    raise Exception('Undefined relationship, abort loading!')
-                if not self.node_exists(session, other_node, other_id, value):
-                    create_parent = False
-                    if create_intermediate_node:
-                        for plugin in self.plugins:
-                            if plugin.should_run(other_node, MISSING_PARENT):
-                                create_parent = True
-                                if plugin.create_node(session, line_num, other_node, value, obj):
-                                    int_node_created += 1
-                                    relationships.append(
-                                        {PARENT_TYPE: other_node, PARENT_ID_FIELD: other_id, PARENT_ID: value,
-                                         RELATIONSHIP_TYPE: relationship_name, MULTIPLIER: multiplier})
-                                else:
-                                    self.log.error(
-                                        'Line: {}: Could not create {} node automatically!'.format(line_num,
-                                                                                                   other_node))
+                parent_value_list = self.schema.get_list_values(value)
+                for value in parent_value_list:
+                    provided_parents += 1
+                    other_node, other_id = key.split('.')
+                    relationship = self.schema.get_relationship(node_type, other_node)
+                    if not isinstance(relationship, dict):
+                        self.log.error('Line: {}: Relationship not found!'.format(line_num))
+                        raise Exception('Undefined relationship, abort loading!')
+                    relationship_name = relationship[RELATIONSHIP_TYPE]
+                    multiplier = relationship[MULTIPLIER]
+                    if not relationship_name:
+                        self.log.error('Line: {}: Relationship not found!'.format(line_num))
+                        raise Exception('Undefined relationship, abort loading!')
+                    if not self.node_exists(session, other_node, other_id, value):
+                        create_parent = False
+                        if create_intermediate_node:
+                            for plugin in self.plugins:
+                                if plugin.should_run(other_node, MISSING_PARENT):
+                                    create_parent = True
+                                    if plugin.create_node(session, line_num, other_node, value, obj):
+                                        int_node_created += 1
+                                        relationships.append(
+                                            {PARENT_TYPE: other_node, PARENT_ID_FIELD: other_id, PARENT_ID: value,
+                                            RELATIONSHIP_TYPE: relationship_name, MULTIPLIER: multiplier})
+                                    else:
+                                        self.log.error(
+                                            'Line: {}: Could not create {} node automatically!'.format(line_num,
+                                                                                                    other_node))
+                        else:
+                            self.log.warning(
+                                'Line: {}: Parent node (:{} {{{}: "{}"}} not found in DB!'.format(line_num, other_node,
+                                                                                                other_id,
+                                                                                                value))
+                        if not create_parent:
+                            self.log.warning(
+                                'Line: {}: Parent node (:{} {{{}: "{}"}} not found in DB!'.format(line_num, other_node,
+                                                                                                other_id,
+                                                                                                value))
                     else:
-                        self.log.warning(
-                            'Line: {}: Parent node (:{} {{{}: "{}"}} not found in DB!'.format(line_num, other_node,
-                                                                                              other_id,
-                                                                                              value))
-                    if not create_parent:
-                        self.log.warning(
-                            'Line: {}: Parent node (:{} {{{}: "{}"}} not found in DB!'.format(line_num, other_node,
-                                                                                              other_id,
-                                                                                              value))
-                else:
-                    if multiplier == ONE_TO_ONE and self.parent_already_has_child(session, node_type, obj,
-                                                                                  relationship_name, other_node,
-                                                                                  other_id, value):
-                        self.log.error(
-                            'Line: {}: one_to_one relationship failed, parent already has a child!'.format(line_num))
-                    else:
-                        relationships.append({PARENT_TYPE: other_node, PARENT_ID_FIELD: other_id, PARENT_ID: value,
-                                              RELATIONSHIP_TYPE: relationship_name, MULTIPLIER: multiplier})
+                        if multiplier == ONE_TO_ONE and self.parent_already_has_child(session, node_type, obj,
+                                                                                    relationship_name, other_node,
+                                                                                    other_id, value):
+                            self.log.error(
+                                'Line: {}: one_to_one relationship failed, parent already has a child!'.format(line_num))
+                        else:
+                            relationships.append({PARENT_TYPE: other_node, PARENT_ID_FIELD: other_id, PARENT_ID: value,
+                                                RELATIONSHIP_TYPE: relationship_name, MULTIPLIER: multiplier})
             elif self.schema.is_relationship_property(key):
-                rel_name, prop_name = key.split(self.rel_prop_delimiter)
-                if rel_name not in relationship_properties:
-                    relationship_properties[rel_name] = {}
-                relationship_properties[rel_name][prop_name] = value
+                parent_value_list = self.schema.get_list_values(value)
+                for value in parent_value_list:
+                    rel_name, prop_name = key.split(self.rel_prop_delimiter)
+                    if rel_name not in relationship_properties:
+                        relationship_properties[rel_name] = {}
+                    relationship_properties[rel_name][prop_name] = value
         return {RELATIONSHIPS: relationships, INT_NODE_CREATED: int_node_created, PROVIDED_PARENTS: provided_parents,
                 RELATIONSHIP_PROPS: relationship_properties}
 
@@ -1209,33 +1218,3 @@ class DataLoader:
                 raise e
         self.log.info('{} nodes deleted!'.format(self.nodes_deleted))
         self.log.info('{} relationships deleted!'.format(self.relationships_deleted))
-
-    def create_indexes(self, session):
-        """
-        Creates indexes, if they do not already exist, for all entries in the "id_fields" and "indexes" sections of the
-        properties file
-        :param session: the current neo4j transaction session
-        """
-        existing = get_btree_indexes(session)
-        # Create indexes from "id_fields" section of the properties file
-        ids = self.schema.props.id_fields
-        for node_name in ids:
-            self.create_index(node_name, ids[node_name], existing, session)
-        # Create indexes from "indexes" section of the properties file
-        indexes = self.schema.props.indexes
-        # each index is a dictionary, indexes is a list of these dictionaries
-        # for each dictionary in list
-        for node_dict in indexes:
-            node_name = list(node_dict.keys())[0]
-            self.create_index(node_name, node_dict[node_name], existing, session)
-
-    def create_index(self, node_name, node_property, existing, session):
-        index_tuple = format_as_tuple(node_name, node_property)
-        # If node_property is a list of properties, convert to a comma delimited string
-        if isinstance(node_property, list):
-            node_property = ",".join(node_property)
-        if index_tuple not in existing:
-            command = "CREATE INDEX ON :{}({});".format(node_name, node_property)
-            session.run(command)
-            self.indexes_created += 1
-            self.log.info("Index created for \"{}\" on property \"{}\"".format(node_name, node_property))
