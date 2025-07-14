@@ -31,7 +31,10 @@ def es_loader_prefect(
     with open(indices_file, 'r') as file:
         indices_yaml = yaml.safe_load(file)
     indices = indices_yaml['Indices']
+
     logger = get_logger('ESLoader')
+    current_directory = os.getcwd()
+    logger.info(f"{LOG_PREFIX} Current working directory: {current_directory}")
     config = {}
     config['model_files'] = model_files
     config['about_file'] = about_file
