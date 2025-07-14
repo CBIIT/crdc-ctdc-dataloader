@@ -1,4 +1,4 @@
-from es_loader import ESLoader, _validate_cypher_queries
+# from es_loader import ESLoader, _validate_cypher_queries
 from prefect import flow
 from typing import Literal
 from bento.common.secret_manager import get_secret
@@ -6,7 +6,7 @@ from bento.common.utils import get_logger, print_config, LOG_PREFIX, APP_NAME
 import yaml
 import os
 import prefect.variables as Variable
-from neo4j import GraphDatabase
+# from neo4j import GraphDatabase
 
 MEMGRAPH_SECRET = "neo4j_secret"
 MEMGRAPH_ENDPOINT = "memgraph_endpoint"
