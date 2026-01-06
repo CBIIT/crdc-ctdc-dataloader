@@ -15,7 +15,7 @@ import os
 @pytest.fixture
 def load_config():
     """ Open the config file and make sure in correct format """
-    config_file_name = 'memgraph-config_v2.yml'
+    config_file_name = os.path.join(os.path.dirname(__file__), 'testing_config.yml')
     with open(config_file_name) as f:
         config = yaml.safe_load(f)
     assert 'Config' in config, "'Config' Header is expected and is missing"
