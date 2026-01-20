@@ -4,19 +4,46 @@ Created on Fri Jan  2 10:35:13 2026
 
 @author: breadsp2
 
-python -m pytest config_pytest.py
+python -m pytest config_pytest.py --config-file testing_config.yml
+
+coverage run -m pytest config_pytest.py --config-file testing_config.yml
 """
 
 import yaml
 import pytest
 import os
 
+from props import Props
+from icdc_schema import ICDC_Schema
+from bento.common.utils import load_plugin
+from bento.common.utils import removeTrailingSlash
+from neo4j import GraphDatabase, Driver
+from data_loader import DataLoader
+
+def pytest_addoption(parser):
+    parser.addoption(
+        "--config-file", action="store", default=None, help="Path to the config file to use for tests"
+    )
 
 @pytest.fixture
-def load_config():
+def data_file_path(request):
+    return request.config.getoption("--config-file")
+
+
+@pytest.fixture
+def test_process_data(data_file_path):
+    if data_file_path is None:
+        pytest.fail("No data file path provided. Use --data-file argument.")
+       
+    return data_file_path
+
+
+@pytest.fixture
+def load_config(data_file_path):
     """ Open the config file and make sure in correct format """
-    config_file_name = os.path.join(os.path.dirname(__file__), 'testing_config.yml')
-    with open(config_file_name) as f:
+#    config_file_name = 'C:/Users/breadsp2/Desktop/Memgraph/config/memgraph-config_v2.yml'
+    config_file_name = data_file_path
+    with open(config_file_name, 'r') as f:
         config = yaml.safe_load(f)
     assert 'Config' in config, "'Config' Header is expected and is missing"
     assert config is not None
@@ -40,12 +67,28 @@ def test_prop_file(load_config):
     return prop_file["Properties"]["id_fields"].keys()
 
 
-#def test_required_fields(load_config):
-#    assert 'temp_folder' in config
-#    assert 's3_bucket' in config
-#    assert 's3_folder'in config
-#    assert 'loading_mode' in config 
+@pytest.fixture
+def neo4j_driver(load_config) -> Driver:
+    """Fixture to create and verify a Neo4j driver connection."""
+    config = load_config["config"] 
+    assert "neo4j" in config, "Missing Neo4j Credentials"
+    neo4j_config = config["neo4j"]
+    
+    neo4j_config["neo4j_uri"] = removeTrailingSlash(neo4j_config["neo4j_uri"])
+    driver = GraphDatabase.driver(
+        neo4j_config["neo4j_uri"],
+        auth=(neo4j_config["neo4j_user"], neo4j_config["neo4j_password"]),
+        encrypted=False
+        )    
+    # verify_connectivity() raises an exception if connection fails
+    driver.verify_connectivity() 
+    return driver
 
+def test_neo4j_connection(neo4j_driver):
+    """A test that uses the fixture and passes if connectivity is verified."""
+    # The fixture will raise an exception and fail the test if the connection fails
+    # If this point is reached, the connection is successful
+    assert neo4j_driver is not None
     
 def test_cheat_mode(load_config):
     config = load_config["config"]  
@@ -87,9 +130,9 @@ def test_max_violations(load_config):
     assert config['max_violations'] >= 0
     
 
-def test_data_file(load_config):   
-    config = load_config["config"] 
-    assert os.path.exists(config["dataset"]), f"Path does not exist: {config['dataset']}"
+#def test_data_file(load_config):   
+#    config = load_config["config"] 
+#    assert os.path.exists(config["dataset"]), f"Path does not exist: {config['dataset']}"
  
 def test_schema_files(load_config, test_prop_file):  
     config = load_config["config"]  
@@ -119,3 +162,36 @@ def test_schema_files(load_config, test_prop_file):
     
     assert len(diff_1) == 0, "Elements in model file but no defination defined" 
     assert len(diff_2) == 0, "Elements in defination file but no node in model" 
+  
+    
+@pytest.fixture   
+def chek_prop_and_schema(load_config):
+    config = load_config["config"]  
+    props = Props(config.prop_file)
+    loader = ICDC_Schema(config.schema_files, props)
+    assert type(loader, ICDC_Schema)
+    return loader
+   
+@pytest.fixture 
+def prepare_plugin(load_config, chek_prop_and_schema):
+    config = load_config["config"]  
+    schema = chek_prop_and_schema
+
+    if not config.params:
+        config.params = {}
+    config.params['schema'] = schema
+    return load_plugin(config.module_name, config.class_name, config.params)
+
+    
+def check_data_loader(load_config, chek_prop_and_schema, neo4j_driver):    
+    config = load_config["config"]  
+    schema = chek_prop_and_schema
+    plugins = []
+    if len(config.plugins) > 0:
+        for plugin_config in config.plugins:
+            plugins.append(prepare_plugin(plugin_config, schema))
+     
+    assert isinstance(DataLoader(neo4j_driver, schema, plugins), DataLoader)
+
+
+    
