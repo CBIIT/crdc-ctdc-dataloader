@@ -3,29 +3,29 @@
 # Lower case names are labels for the entities
 
 PropDefinitions:
-  # name_of_node
-  property_1:
-    Desc: text
-    Term:
-      - Origin: caDSR
-        Code: 'code/ID'
-        Value: Data Element Name  
-    Src: value
-    Type: integer
-    Req: 'Yes'
-  property_2:
-    Desc: text
-    Src: value
-    Type: datetime
-    Req: 'No'
-  property_3:
-    Desc: text
-    Src: value
-    Enum: 
-      - 'Yes'
-      - 'No'
-    Req: Preferred
-  # program
+# # name_of_node
+  # property_1:
+  #   Desc: text
+  #   Term:
+  #     - Origin: caDSR
+  #       Code: 'code/ID'
+  #       Value: Data Element Name  
+  #   Src: value
+  #   Type: integer
+  #   Req: 'Yes'
+  # property_2:
+  #   Desc: text
+  #   Src: value
+  #   Type: datetime
+  #   Req: 'No'
+  # property_3:
+  #   Desc: text
+  #   Src: value
+  #   Enum: 
+  #     - 'Yes'
+  #     - 'No'
+  #   Req: Preferred
+# # program
   program_name:
     Desc: The narrative title used to refer to a broad framework (an administrative umbrella) of goals under which related projects or other research activities are grouped. Example - Clinical Proteomic Tumor Analysis. <br>CDE ID = 11444542 
     Term:
