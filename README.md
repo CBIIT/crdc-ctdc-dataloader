@@ -1,6 +1,7 @@
 # NCI ICDC/CTDC Data Loader
 This is the documentation index for the NCI ICDC/CTDC Data Loader
 
+[![Coverage Status](https://coveralls.io/repos/github/CBIIT/crdc-ctdc-dataloader/badge.svg?branch=master)](https://coveralls.io/github/CBIIT/crdc-ctdc-dataloader?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f4d5afb8403642dbab917cb4aa4ef47d)](https://www.codacy.com/manual/FNLCR_2/icdc-dataloader?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=CBIIT/icdc-dataloader&amp;utm_campaign=Badge_Grade)
 
 ## Module List
@@ -21,3 +22,34 @@ The NCI ICDC/CTDC Data Loader includes multiple data loading modules:
 -   **Model Converter**
     -   The Model Converter uses a combination of YAML format schema files, a YAML formatted properties files, and a GraphQL formatted queries file to generate a GraphQL formatted schema.
     -   [Model Converter Documentation](docs/model-converter.md)
+
+
+## Testing
+
+### Running Tests
+
+To run the tests with coverage:
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Run tests with pytest
+python -m pytest tests/config_pytest.py --config-file tests/testing_config.yml
+
+# Run tests with coverage
+coverage run -m pytest tests/config_pytest.py --config-file tests/testing_config.yml
+
+# View coverage report in terminal
+coverage report
+
+# Generate HTML coverage report
+coverage html
+# Open htmlcov/index.html in your browser
+```
+
+### Prerequisites for Testing
+
+- Python 3.13+
+- Neo4j database running on `bolt://127.0.0.1:7687` (for connection tests)
+- Update Neo4j credentials in `tests/testing_config.yml` if needed
