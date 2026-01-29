@@ -16,3 +16,5 @@ backup/
 my_env/
 cmb-data/2023-8-23
 .vscode/
+.coverage
+htmlcov/

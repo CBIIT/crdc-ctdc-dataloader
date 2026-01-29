@@ -1,4 +1,4 @@
-name: Test and Coverage
+name: Test & Coverage
 
 on:
   push:
@@ -8,14 +8,14 @@ on:
 
 jobs:
   test:
-    name: Test Changes and Measure Coverage
+    name: Test & Coverage
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          submodules: 'recursive'
+          submodules: "recursive"
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -33,10 +33,9 @@ jobs:
         continue-on-error: true
 
       - name: Generate coverage report
-        if: always()
         run: |
-          coverage report || true
-          coverage xml || true
+          coverage report
+          coverage xml
 
       - name: Upload coverage to Coveralls
         if: always()
@@ -44,5 +43,5 @@ jobs:
         continue-on-error: true
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          coverage-file: coverage.xml   # preferred for python xml upload
+          coverage-file: coverage.xml # preferred for python xml upload
           format: python

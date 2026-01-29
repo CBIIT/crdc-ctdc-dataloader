@@ -68,11 +68,21 @@ def test_prop_file(load_config):
 
 
 @pytest.fixture
-def neo4j_driver(load_config) -> Driver:
-    """Fixture to create and verify a Neo4j driver connection."""
+def neo4j_driver(load_config, mocker):
+    """Fixture to create and verify a Neo4j driver connection.
+    
+    Note: Currently mocked. TODO: Add integration tests with real Neo4j connection.
+    """
     config = load_config["config"] 
     assert "neo4j" in config, "Missing Neo4j Credentials"
     neo4j_config = config["neo4j"]
+    
+    # Mock the Neo4j driver to avoid needing a real database
+    mock_driver = mocker.MagicMock()
+    mock_driver.verify_connectivity.return_value = None
+    
+    # Mock the GraphDatabase.driver to return our mock
+    mocker.patch('neo4j.GraphDatabase.driver', return_value=mock_driver)
     
     neo4j_config["neo4j_uri"] = removeTrailingSlash(neo4j_config["neo4j_uri"])
     driver = GraphDatabase.driver(
