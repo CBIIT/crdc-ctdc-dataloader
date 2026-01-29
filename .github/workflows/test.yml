@@ -33,13 +33,16 @@ jobs:
         continue-on-error: true
 
       - name: Generate coverage report
+        if: always()
         run: |
-          coverage report
-          coverage xml
+          coverage report || true
+          coverage xml || true
 
       - name: Upload coverage to Coveralls
+        if: always()
         uses: coverallsapp/github-action@v2
+        continue-on-error: true
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: coverage.xml
+          coverage-file: coverage.xml   # preferred for python xml upload
           format: python
