@@ -110,7 +110,7 @@ def test_no_backup(load_config):
     assert 'no_backup' in config 
     assert config['no_backup'] in [True, False]
     
-    if config['no_backup'] == True:
+    if config['no_backup'] == False:
         assert 'backup_folder' in config
         assert os.path.exists(config['backup_folder']), f"Path does not exist: {config['backup_folder']}"
           
