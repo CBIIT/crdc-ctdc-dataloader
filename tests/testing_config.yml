@@ -3,7 +3,7 @@ Config:
   backup_folder: /tmp/data-loader-backups
 
   neo4j:
-    # Location of Neo4j server, e.g., bolt://127.0.0.1:7687, can be overridden by -i/--uir argument
+    # Location of Neo4j server, e.g., bolt://127.0.0.1:7687, can be overridden by -i/--uri argument
     neo4j_uri: bolt://127.0.0.1:7687
     # Neo4j username, can be overridden by -u/--user argument
     neo4j_user: neo4j
