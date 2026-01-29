@@ -1,4 +1,4 @@
-name: Coverage Report
+name: Test and Coverage
 
 on:
   push:
@@ -7,11 +7,15 @@ on:
     branches: [main, master, develop]
 
 jobs:
-  coverage:
+  test:
+    name: Test Changes and Measure Coverage
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
 
       - name: Set up Python
         uses: actions/setup-python@v5
