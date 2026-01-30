@@ -1,6 +1,14 @@
 Config:
   temp_folder: tmp
   backup_folder: /tmp/data-loader-backups
+
+  neo4j:
+    # Location of Neo4j server, e.g., bolt://127.0.0.1:7687, can be overridden by -i/--uri argument
+    neo4j_uri: bolt://127.0.0.1:7687
+    # Neo4j username, can be overridden by -u/--user argument
+    neo4j_user: neo4j
+    # Neo4j password
+    neo4j_password: neo4j
     
   # Schema files' locations, usually two file, can be overridden by -s/--schema argument
   schema:
@@ -9,7 +17,7 @@ Config:
 
   # Property file location, props-icdc.yml, props-ctdc.yml etc. can be overridden by --prop-file argument
   prop_file:  
-    ./config/props_ctdc.yml
+    ./config/props-ctdc.yml
      
   # Skip validations, aka. Cheat Mode, can be overridden by -c/--cheat-mode argument
   cheat_mode: True

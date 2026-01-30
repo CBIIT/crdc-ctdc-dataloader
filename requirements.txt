@@ -6,3 +6,5 @@ elasticsearch==7.13.*
 tqdm
 requests_aws4auth
 pytest
+pytest-mock
+coverage
