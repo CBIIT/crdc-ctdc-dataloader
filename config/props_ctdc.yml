@@ -1,0 +1,63 @@
+Properties:
+  domain: trialcommons.cancer.gov
+  rel_prop_delimiter: "$"
+
+  plurals:
+    specimen: specimens
+    study: studies
+    project: projects
+    program: programs
+    associated_link: associated_links
+    image_collection: image_collections
+    subject: subjects
+    demographic: demographics
+    exposure: exposures
+    diagnosis: diagnoses
+    targeted_therapy: targeted_therapies
+    therapy: therapies
+    surgical_procedure: surgical_procedures
+    radiological_procedure: radiological_procedures
+    subject_status: subject_status
+    data_file: data_files
+    principal_investigator:  principal_investigators
+    participant: participants
+    file: files
+    publication: publications
+    consent_group: consent_groups
+    non_targeted_therapy: non_targeted_therapies
+    surgery: surgeries
+    radiotherapy: radiotherapies
+
+
+  type_mapping:
+    string: String
+    number: Float
+    integer: Int
+    boolean: Boolean
+    array: Array
+    object: Object
+    datetime: DateTime
+    date: Date
+    TBD: String
+
+  id_fields:
+    associated_link: associated_link_record_id  #associated_link_name
+    consent_group: consent_group_id
+    demographic: demographic_record_id
+    diagnosis: diagnosis_record_id
+    exposure: exposure_record_id
+    file: data_file_name
+    cohort: cohort_record_id
+    study_arm: study_arm_record_id
+    image_collection: image_collection_record_id
+    non_targeted_therapy: non_targeted_therapy_record_id
+    participant: participant_id    
+    participant_status: participant_status_record_id
+    principal_investigator:  person_record_id
+    program: program_short_name    
+    publication: digital_object_id
+    radiotherapy: radiological_procedure_record_id
+    targeted_therapy: targeted_therapy_record_id
+    specimen: specimen_record_id
+    study: study_short_name
+    surgery: surgical_procedure_record_id
