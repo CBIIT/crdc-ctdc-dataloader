@@ -54,14 +54,13 @@ Properties:
     cohort: cohort_record_id
     study_arm: study_arm_record_id
     image_collection: image_collection_record_id
-    non_targeted_therapy: non_targeted_therapy_record_id
     participant: participant_id    
     participant_status: participant_status_record_id
     principal_investigator:  person_record_id
     program: program_short_name    
     publication: digital_object_id
     radiotherapy: radiological_procedure_record_id
-    targeted_therapy: targeted_therapy_record_id
+    therapy: therapy_record_id
     specimen: specimen_record_id
     study: study_short_name
     surgery: surgical_procedure_record_id
